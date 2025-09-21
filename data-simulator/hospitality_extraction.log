@@ -1,0 +1,136 @@
+2025-09-21 17:28:09,877 - INFO - Starting Toulouse hospitality venues extraction
+2025-09-21 17:28:09,886 - INFO - Initialized ToulouseHospitalityExtractor
+2025-09-21 17:28:09,888 - INFO - Processing OSM PBF file...
+2025-09-21 17:28:09,889 - ERROR - Error during extraction: 'ToulouseHospitalityExtractor' object has no attribute 'extract'
+2025-09-21 17:29:15,417 - INFO - Starting Toulouse hospitality venues extraction
+2025-09-21 17:29:15,425 - INFO - Initialized ToulouseHospitalityExtractor
+2025-09-21 17:29:15,425 - INFO - Processing OSM PBF file...
+2025-09-21 17:29:21,868 - INFO - Processed 1,000,000 nodes, found 30 venues
+2025-09-21 17:29:28,660 - INFO - Processed 2,000,000 nodes, found 105 venues
+2025-09-21 17:29:39,331 - INFO - Processed 3,000,000 nodes, found 162 venues
+2025-09-21 17:29:44,826 - INFO - Processed 4,000,000 nodes, found 176 venues
+2025-09-21 17:29:52,659 - INFO - Processed 5,000,000 nodes, found 187 venues
+2025-09-21 17:30:04,731 - INFO - Processed 6,000,000 nodes, found 202 venues
+2025-09-21 17:30:10,361 - INFO - Processed 7,000,000 nodes, found 224 venues
+2025-09-21 17:30:16,488 - INFO - Processed 8,000,000 nodes, found 232 venues
+2025-09-21 17:30:22,270 - INFO - Processed 9,000,000 nodes, found 261 venues
+2025-09-21 17:30:29,599 - INFO - Processed 10,000,000 nodes, found 276 venues
+2025-09-21 17:30:36,869 - INFO - Processed 11,000,000 nodes, found 320 venues
+2025-09-21 17:30:42,076 - INFO - Processed 12,000,000 nodes, found 346 venues
+2025-09-21 17:30:47,758 - INFO - Processed 13,000,000 nodes, found 389 venues
+2025-09-21 17:30:54,010 - INFO - Processed 14,000,000 nodes, found 420 venues
+2025-09-21 17:31:01,058 - INFO - Processed 15,000,000 nodes, found 447 venues
+2025-09-21 17:31:06,531 - INFO - Processed 16,000,000 nodes, found 503 venues
+2025-09-21 17:31:12,208 - INFO - Processed 17,000,000 nodes, found 796 venues
+2025-09-21 17:31:17,836 - INFO - Processed 18,000,000 nodes, found 820 venues
+2025-09-21 17:31:23,547 - INFO - Processed 19,000,000 nodes, found 829 venues
+2025-09-21 17:31:29,695 - INFO - Processed 20,000,000 nodes, found 855 venues
+2025-09-21 17:31:35,110 - INFO - Processed 21,000,000 nodes, found 861 venues
+2025-09-21 17:31:40,805 - INFO - Processed 22,000,000 nodes, found 874 venues
+2025-09-21 17:31:46,708 - INFO - Processed 23,000,000 nodes, found 952 venues
+2025-09-21 17:31:52,773 - INFO - Processed 24,000,000 nodes, found 971 venues
+2025-09-21 17:31:58,713 - INFO - Processed 25,000,000 nodes, found 1024 venues
+2025-09-21 17:32:03,851 - INFO - Processed 26,000,000 nodes, found 1085 venues
+2025-09-21 17:32:09,696 - INFO - Processed 27,000,000 nodes, found 1148 venues
+2025-09-21 17:32:16,527 - INFO - Processed 28,000,000 nodes, found 1254 venues
+2025-09-21 17:32:22,211 - INFO - Processed 29,000,000 nodes, found 1385 venues
+2025-09-21 17:32:28,372 - INFO - Processed 30,000,000 nodes, found 1475 venues
+2025-09-21 17:32:34,168 - INFO - Processed 31,000,000 nodes, found 1508 venues
+2025-09-21 17:32:40,171 - INFO - Processed 32,000,000 nodes, found 1557 venues
+2025-09-21 17:32:46,231 - INFO - Processed 33,000,000 nodes, found 1621 venues
+2025-09-21 17:32:52,441 - INFO - Processed 34,000,000 nodes, found 1663 venues
+2025-09-21 17:32:58,530 - INFO - Processed 35,000,000 nodes, found 1715 venues
+2025-09-21 17:33:06,883 - INFO - Processed 36,000,000 nodes, found 1757 venues
+2025-09-21 17:33:13,847 - INFO - Processed 37,000,000 nodes, found 1807 venues
+2025-09-21 17:33:17,398 - INFO - Processed 100,000 ways
+2025-09-21 17:33:20,060 - INFO - Processed 200,000 ways
+2025-09-21 17:33:22,558 - INFO - Processed 300,000 ways
+2025-09-21 17:33:25,375 - INFO - Processed 400,000 ways
+2025-09-21 17:33:28,280 - INFO - Processed 500,000 ways
+2025-09-21 17:33:30,476 - INFO - Processed 600,000 ways
+2025-09-21 17:33:33,281 - INFO - Processed 700,000 ways
+2025-09-21 17:33:36,176 - INFO - Processed 800,000 ways
+2025-09-21 17:33:38,954 - INFO - Processed 900,000 ways
+2025-09-21 17:33:41,503 - INFO - Processed 1,000,000 ways
+2025-09-21 17:33:44,328 - INFO - Processed 1,100,000 ways
+2025-09-21 17:33:47,089 - INFO - Processed 1,200,000 ways
+2025-09-21 17:33:49,576 - INFO - Processed 1,300,000 ways
+2025-09-21 17:33:52,258 - INFO - Processed 1,400,000 ways
+2025-09-21 17:33:55,187 - INFO - Processed 1,500,000 ways
+2025-09-21 17:33:58,028 - INFO - Processed 1,600,000 ways
+2025-09-21 17:34:00,898 - INFO - Processed 1,700,000 ways
+2025-09-21 17:34:03,654 - INFO - Processed 1,800,000 ways
+2025-09-21 17:34:06,511 - INFO - Processed 1,900,000 ways
+2025-09-21 17:34:09,165 - INFO - Processed 2,000,000 ways
+2025-09-21 17:34:11,772 - INFO - Processed 2,100,000 ways
+2025-09-21 17:34:14,523 - INFO - Processed 2,200,000 ways
+2025-09-21 17:34:17,767 - INFO - Processed 2,300,000 ways
+2025-09-21 17:34:20,473 - INFO - Processed 2,400,000 ways
+2025-09-21 17:34:23,250 - INFO - Processed 2,500,000 ways
+2025-09-21 17:34:25,948 - INFO - Processed 2,600,000 ways
+2025-09-21 17:34:28,846 - INFO - Processed 2,700,000 ways
+2025-09-21 17:34:31,369 - INFO - Processed 2,800,000 ways
+2025-09-21 17:34:34,106 - INFO - Processed 2,900,000 ways
+2025-09-21 17:34:37,134 - INFO - Processed 3,000,000 ways
+2025-09-21 17:34:39,952 - INFO - Processed 3,100,000 ways
+2025-09-21 17:34:43,345 - INFO - Processed 3,200,000 ways
+2025-09-21 17:34:46,207 - INFO - Processed 3,300,000 ways
+2025-09-21 17:34:48,990 - INFO - Processed 3,400,000 ways
+2025-09-21 17:34:51,738 - INFO - Processed 3,500,000 ways
+2025-09-21 17:34:54,464 - INFO - Processed 3,600,000 ways
+2025-09-21 17:34:56,873 - INFO - Processed 3,700,000 ways
+2025-09-21 17:34:59,767 - INFO - Processed 3,800,000 ways
+2025-09-21 17:35:02,335 - INFO - Processed 3,900,000 ways
+2025-09-21 17:35:04,653 - INFO - Processed 4,000,000 ways
+2025-09-21 17:35:07,593 - INFO - Processed 4,100,000 ways
+2025-09-21 17:35:10,341 - INFO - Processed 4,200,000 ways
+2025-09-21 17:35:13,199 - INFO - Processed 4,300,000 ways
+2025-09-21 17:35:15,852 - INFO - Processed 4,400,000 ways
+2025-09-21 17:35:18,220 - INFO - Processed 4,500,000 ways
+2025-09-21 17:35:20,870 - INFO - Processed 4,600,000 ways
+2025-09-21 17:35:23,561 - INFO - Processed 4,700,000 ways
+2025-09-21 17:35:26,029 - INFO - Processed 4,800,000 ways
+2025-09-21 17:35:28,092 - INFO - Processing completed in 372.67 seconds
+2025-09-21 17:35:28,105 - ERROR - Error during extraction: write() argument must be str, not dict
+2025-09-21 17:38:26,852 - INFO - Starting Toulouse hospitality venues extraction
+2025-09-21 17:38:26,857 - INFO - Initialized ToulouseHospitalityExtractor
+2025-09-21 17:38:26,857 - INFO - Processing OSM PBF file...
+2025-09-21 17:38:32,683 - INFO - Processed 1,000,000 nodes, found 30 venues
+2025-09-21 17:38:39,256 - INFO - Processed 2,000,000 nodes, found 105 venues
+2025-09-21 17:38:48,542 - INFO - Processed 3,000,000 nodes, found 162 venues
+2025-09-21 17:38:54,943 - INFO - Processed 4,000,000 nodes, found 176 venues
+2025-09-21 17:39:02,136 - INFO - Processed 5,000,000 nodes, found 187 venues
+2025-09-21 17:39:14,283 - INFO - Processed 6,000,000 nodes, found 202 venues
+2025-09-21 17:39:19,873 - INFO - Processed 7,000,000 nodes, found 224 venues
+2025-09-21 17:39:26,077 - INFO - Processed 8,000,000 nodes, found 232 venues
+2025-09-21 17:39:32,295 - INFO - Processed 9,000,000 nodes, found 261 venues
+2025-09-21 17:39:37,771 - INFO - Processed 10,000,000 nodes, found 276 venues
+2025-09-21 17:39:43,674 - INFO - Processed 11,000,000 nodes, found 320 venues
+2025-09-21 17:39:49,455 - INFO - Processed 12,000,000 nodes, found 346 venues
+2025-09-21 17:39:56,569 - INFO - Processed 13,000,000 nodes, found 389 venues
+2025-09-21 17:40:02,564 - INFO - Processed 14,000,000 nodes, found 420 venues
+2025-09-21 17:40:09,640 - INFO - Processed 15,000,000 nodes, found 447 venues
+2025-09-21 17:40:15,743 - INFO - Processed 16,000,000 nodes, found 503 venues
+2025-09-21 17:40:21,656 - INFO - Processed 17,000,000 nodes, found 796 venues
+2025-09-21 17:40:27,411 - INFO - Processed 18,000,000 nodes, found 820 venues
+2025-09-21 17:40:33,647 - INFO - Processed 19,000,000 nodes, found 829 venues
+2025-09-21 17:40:39,835 - INFO - Processed 20,000,000 nodes, found 855 venues
+2025-09-21 17:40:46,059 - INFO - Processed 21,000,000 nodes, found 861 venues
+2025-09-21 17:40:51,703 - INFO - Processed 22,000,000 nodes, found 874 venues
+2025-09-21 17:40:58,268 - INFO - Processed 23,000,000 nodes, found 952 venues
+2025-09-21 17:41:04,030 - INFO - Processed 24,000,000 nodes, found 971 venues
+2025-09-21 17:41:10,358 - INFO - Processed 25,000,000 nodes, found 1024 venues
+2025-09-21 17:41:16,039 - INFO - Processed 26,000,000 nodes, found 1085 venues
+2025-09-21 17:41:22,332 - INFO - Processed 27,000,000 nodes, found 1148 venues
+2025-09-21 17:41:28,478 - INFO - Processed 28,000,000 nodes, found 1254 venues
+2025-09-21 17:41:35,060 - INFO - Processed 29,000,000 nodes, found 1385 venues
+2025-09-21 17:41:41,450 - INFO - Processed 30,000,000 nodes, found 1475 venues
+2025-09-21 17:41:47,236 - INFO - Processed 31,000,000 nodes, found 1508 venues
+2025-09-21 17:41:53,720 - INFO - Processed 32,000,000 nodes, found 1557 venues
+2025-09-21 17:41:59,696 - INFO - Processed 33,000,000 nodes, found 1621 venues
+2025-09-21 17:42:06,006 - INFO - Processed 34,000,000 nodes, found 1663 venues
+2025-09-21 17:42:12,707 - INFO - Processed 35,000,000 nodes, found 1715 venues
+2025-09-21 17:42:21,656 - INFO - Processed 36,000,000 nodes, found 1757 venues
+2025-09-21 17:42:28,549 - INFO - Processed 37,000,000 nodes, found 1807 venues
+2025-09-21 17:42:41,141 - INFO - Processing completed in 254.28 seconds
+2025-09-21 17:42:41,325 - INFO - Successfully extracted 1807 hospitality venues

@@ -1,0 +1,241 @@
+"""
+Base extractor class for Toulouse OSM data processing.
+
+This module provides a common base class for all Toulouse-specific extractors,
+eliminating code duplication and providing consistent functionality.
+"""
+
+import logging
+import osmium
+from typing import Dict, List, Optional, Any, Set
+from abc import ABC, abstractmethod
+from models.location import Location, LocationType, Position, OpeningHours
+from models.location_repository import LocationRepository
+
+
+class ToulouseBaseExtractor(osmium.SimpleHandler, ABC):
+    """
+    Base class for OSM extractors focused on Toulouse venues.
+    
+    Provides common functionality for geographic filtering, statistics tracking,
+    location creation, and OSM data processing.
+    """
+    
+    def __init__(self, extractor_type: str):
+        """
+        Initialize the base extractor.
+        
+        Args:
+            extractor_type: Type of extractor (e.g., 'educational', 'hospitality', 'entertainment')
+        """
+        osmium.SimpleHandler.__init__(self)
+        self.extractor_type = extractor_type
+        self.repository = LocationRepository()
+        
+        # Toulouse approximate bounds (for performance filtering)
+        self.min_lat = 43.55
+        self.max_lat = 43.65
+        self.min_lon = 1.35
+        self.max_lon = 1.50
+        
+        # Statistics tracking
+        self.processed_nodes = 0
+        self.processed_ways = 0
+        self.found_venues = 0
+        
+        # Subclasses should define their specific mappings
+        self.amenity_mappings: Dict[str, LocationType] = {}
+        self.building_mappings: Dict[str, LocationType] = {}
+        self.leisure_mappings: Dict[str, LocationType] = {}
+        self.tourism_mappings: Dict[str, LocationType] = {}
+        self.additional_mappings: Dict[str, Dict[str, LocationType]] = {}
+        
+        logging.info(f"Initialized {self.__class__.__name__}")
+    
+    def _is_in_toulouse(self, lat: float, lon: float) -> bool:
+        """Check if coordinates are within Toulouse bounds."""
+        return (self.min_lat <= lat <= self.max_lat and 
+                self.min_lon <= lon <= self.max_lon)
+    
+    def _extract_name(self, tags: Dict[str, str]) -> Optional[str]:
+        """Extract venue name from OSM tags with fallback hierarchy."""
+        if 'name' in tags:
+            return tags['name']
+        elif 'name:fr' in tags:
+            return tags['name:fr']
+        elif 'name:en' in tags:
+            return tags['name:en']
+        elif 'operator' in tags:
+            return tags['operator']
+        elif 'brand' in tags:
+            return tags['brand']
+        return None
+    
+    def _extract_opening_hours(self, tags: Dict[str, str]) -> Optional[OpeningHours]:
+        """Extract opening hours information from OSM tags."""
+        if 'opening_hours' in tags:
+            raw_hours = tags['opening_hours']
+            is_always_open = raw_hours.lower() in ['24/7', 'always']
+            
+            return OpeningHours(
+                raw_hours=raw_hours,
+                is_always_open=is_always_open,
+                notes=tags.get('opening_hours:note')
+            )
+        return None
+    
+    def _extract_additional_info(self, tags: Dict[str, str]) -> Dict[str, Any]:
+        """Extract additional information from OSM tags."""
+        additional_info = {}
+        
+        # Address information
+        if 'addr:full' in tags:
+            additional_info['address'] = tags['addr:full']
+        else:
+            address_parts = []
+            if 'addr:housenumber' in tags:
+                address_parts.append(tags['addr:housenumber'])
+            if 'addr:street' in tags:
+                address_parts.append(tags['addr:street'])
+            if address_parts:
+                additional_info['address'] = ' '.join(address_parts)
+        
+        # Location details
+        for field in ['addr:city', 'addr:postcode', 'phone', 'website', 'email']:
+            if field in tags:
+                key = field.replace('addr:', '').replace(':', '_')
+                additional_info[key] = tags[field]
+        
+        # Accessibility
+        if 'wheelchair' in tags:
+            additional_info['wheelchair_accessible'] = tags['wheelchair'] == 'yes'
+        
+        # Other useful tags
+        for field in ['description', 'operator', 'brand', 'cuisine', 'internet_access']:
+            if field in tags:
+                additional_info[field] = tags[field]
+        
+        return additional_info
+    
+    @abstractmethod
+    def _get_location_type_from_tags(self, tags: Dict[str, str]) -> Optional[LocationType]:
+        """
+        Extract location type from OSM tags.
+        
+        This method must be implemented by subclasses to define their specific
+        mapping logic from OSM tags to LocationType.
+        
+        Args:
+            tags: OSM tags dictionary
+            
+        Returns:
+            LocationType if venue matches extractor criteria, None otherwise
+        """
+        pass
+    
+    def _create_location(self, tags: Dict[str, str], lat: float, lon: float, osm_id: str = None) -> bool:
+        """
+        Create a Location object from OSM data.
+        
+        Args:
+            tags: OSM tags dictionary
+            lat: Latitude coordinate
+            lon: Longitude coordinate
+            osm_id: OSM ID for reference
+            
+        Returns:
+            True if location was created successfully, False otherwise
+        """
+        # Get location type from subclass implementation
+        location_type = self._get_location_type_from_tags(tags)
+        
+        if not location_type:
+            return False
+        
+        # Extract venue information
+        name = self._extract_name(tags)
+        opening_hours = self._extract_opening_hours(tags)
+        additional_info = self._extract_additional_info(tags)
+        
+        if osm_id:
+            additional_info['osm_id'] = osm_id
+        
+        try:
+            location = Location(
+                name=name or f"Unnamed {location_type.value}",
+                position=Position(latitude=lat, longitude=lon),
+                location_type=location_type,
+                opening_hours=opening_hours,
+                additional_info=additional_info
+            )
+            
+            self.repository.add_location(location)
+            self.found_venues += 1
+            
+            logging.debug(f"Added {location_type.value}: {name or 'Unnamed'} at ({lat:.6f}, {lon:.6f})")
+            return True
+            
+        except (ValueError, TypeError) as e:
+            logging.warning(f"Failed to create location at ({lat}, {lon}): {e}")
+            return False
+    
+    def node(self, n):
+        """Process OSM nodes (points of interest)."""
+        self.processed_nodes += 1
+        
+        if self.processed_nodes % 1000000 == 0:
+            logging.info(f"Processed {self.processed_nodes:,} nodes, found {self.found_venues} venues")
+        
+        # Check if node has location data
+        if not hasattr(n, 'location') or not n.location.valid():
+            return
+        
+        lat = n.location.lat
+        lon = n.location.lon
+        
+        # Filter by Toulouse bounds for performance
+        if not self._is_in_toulouse(lat, lon):
+            return
+        
+        # Convert tags to dictionary
+        tags = {tag.k: tag.v for tag in n.tags}
+        
+        # Try to create location
+        self._create_location(tags, lat, lon, f"node/{n.id}")
+    
+    def way(self, w):
+        """Process OSM ways (areas and buildings). DISABLED - Only processing nodes."""
+        # Skip way processing - only interested in nodes
+        self.processed_ways += 1
+        return
+    
+    def _might_contain_venues(self, tags: Dict[str, str]) -> bool:
+        """
+        Quick check if way might contain venues relevant to this extractor.
+        
+        Subclasses can override this for more specific filtering.
+        """
+        # Check common venue-related tags
+        venue_tags = {'amenity', 'building', 'leisure', 'tourism', 'landuse'}
+        return any(tag in tags for tag in venue_tags)
+    
+    def get_statistics(self) -> Dict:
+        """Get comprehensive extraction statistics."""
+        stats = {
+            'extractor_type': self.extractor_type,
+            'processed_nodes': self.processed_nodes,
+            'processed_ways': self.processed_ways,
+            'total_venues': len(self.repository),
+            'venue_breakdown': {}
+        }
+        
+        # Count venues by type
+        for location in self.repository.get_all_locations():
+            venue_type = location.location_type.value
+            stats['venue_breakdown'][venue_type] = stats['venue_breakdown'].get(venue_type, 0) + 1
+        
+        return stats
+    
+    def get_repository(self) -> LocationRepository:
+        """Get the location repository with all extracted venues."""
+        return self.repository

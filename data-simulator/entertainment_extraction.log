@@ -1,0 +1,247 @@
+2025-09-21 17:11:39,764 - INFO - Starting Toulouse entertainment venues extraction
+2025-09-21 17:11:39,780 - INFO - Initialized ToulouseEntertainmentExtractor
+2025-09-21 17:11:39,781 - INFO - Processing PBF file: ../data/midi-pyrenees-latest.osm.pbf
+2025-09-21 17:11:45,867 - INFO - Processed 1,000,000 nodes, found 7 venues
+2025-09-21 17:11:52,298 - INFO - Processed 2,000,000 nodes, found 13 venues
+2025-09-21 17:12:04,355 - INFO - Processed 3,000,000 nodes, found 16 venues
+2025-09-21 17:12:11,648 - INFO - Processed 4,000,000 nodes, found 16 venues
+2025-09-21 17:12:20,958 - INFO - Processed 5,000,000 nodes, found 17 venues
+2025-09-21 17:12:35,639 - INFO - Processed 6,000,000 nodes, found 17 venues
+2025-09-21 17:12:42,801 - INFO - Processed 7,000,000 nodes, found 18 venues
+2025-09-21 17:12:49,633 - INFO - Processed 8,000,000 nodes, found 18 venues
+2025-09-21 17:12:56,998 - INFO - Processed 9,000,000 nodes, found 18 venues
+2025-09-21 17:13:03,129 - INFO - Processed 10,000,000 nodes, found 18 venues
+2025-09-21 17:13:09,871 - INFO - Processed 11,000,000 nodes, found 26 venues
+2025-09-21 17:13:15,691 - INFO - Processed 12,000,000 nodes, found 33 venues
+2025-09-21 17:13:22,037 - INFO - Processed 13,000,000 nodes, found 35 venues
+2025-09-21 17:13:28,278 - INFO - Processed 14,000,000 nodes, found 38 venues
+2025-09-21 17:13:35,026 - INFO - Processed 15,000,000 nodes, found 41 venues
+2025-09-21 17:13:40,977 - INFO - Processed 16,000,000 nodes, found 41 venues
+2025-09-21 17:13:46,625 - INFO - Processed 17,000,000 nodes, found 51 venues
+2025-09-21 17:13:52,977 - INFO - Processed 18,000,000 nodes, found 56 venues
+2025-09-21 17:13:58,847 - INFO - Processed 19,000,000 nodes, found 56 venues
+2025-09-21 17:14:04,901 - INFO - Processed 20,000,000 nodes, found 56 venues
+2025-09-21 17:14:10,117 - INFO - Processed 21,000,000 nodes, found 58 venues
+2025-09-21 17:14:16,294 - INFO - Processed 22,000,000 nodes, found 58 venues
+2025-09-21 17:14:22,477 - INFO - Processed 23,000,000 nodes, found 64 venues
+2025-09-21 17:14:29,298 - INFO - Processed 24,000,000 nodes, found 66 venues
+2025-09-21 17:14:36,053 - INFO - Processed 25,000,000 nodes, found 81 venues
+2025-09-21 17:14:41,929 - INFO - Processed 26,000,000 nodes, found 84 venues
+2025-09-21 17:14:48,455 - INFO - Processed 27,000,000 nodes, found 89 venues
+2025-09-21 17:14:54,840 - INFO - Processed 28,000,000 nodes, found 105 venues
+2025-09-21 17:15:01,240 - INFO - Processed 29,000,000 nodes, found 128 venues
+2025-09-21 17:15:07,758 - INFO - Processed 30,000,000 nodes, found 154 venues
+2025-09-21 17:15:13,788 - INFO - Processed 31,000,000 nodes, found 162 venues
+2025-09-21 17:15:19,537 - INFO - Processed 32,000,000 nodes, found 169 venues
+2025-09-21 17:15:26,274 - INFO - Processed 33,000,000 nodes, found 178 venues
+2025-09-21 17:15:32,471 - INFO - Processed 34,000,000 nodes, found 183 venues
+2025-09-21 17:15:39,490 - INFO - Processed 35,000,000 nodes, found 191 venues
+2025-09-21 17:15:48,756 - INFO - Processed 36,000,000 nodes, found 198 venues
+2025-09-21 17:15:56,682 - INFO - Processed 37,000,000 nodes, found 203 venues
+2025-09-21 17:16:00,096 - INFO - Processed 100,000 ways
+2025-09-21 17:16:03,190 - INFO - Processed 200,000 ways
+2025-09-21 17:16:06,733 - INFO - Processed 300,000 ways
+2025-09-21 17:16:10,777 - INFO - Processed 400,000 ways
+2025-09-21 17:16:14,232 - INFO - Processed 500,000 ways
+2025-09-21 17:16:17,738 - INFO - Processed 600,000 ways
+2025-09-21 17:16:21,030 - INFO - Processed 700,000 ways
+2025-09-21 17:16:24,174 - INFO - Processed 800,000 ways
+2025-09-21 17:16:26,707 - INFO - Processed 900,000 ways
+2025-09-21 17:16:29,577 - INFO - Processed 1,000,000 ways
+2025-09-21 17:16:32,167 - INFO - Processed 1,100,000 ways
+2025-09-21 17:16:35,104 - INFO - Processed 1,200,000 ways
+2025-09-21 17:16:37,790 - INFO - Processed 1,300,000 ways
+2025-09-21 17:16:40,698 - INFO - Processed 1,400,000 ways
+2025-09-21 17:16:43,983 - INFO - Processed 1,500,000 ways
+2025-09-21 17:16:46,819 - INFO - Processed 1,600,000 ways
+2025-09-21 17:16:49,583 - INFO - Processed 1,700,000 ways
+2025-09-21 17:16:52,034 - INFO - Processed 1,800,000 ways
+2025-09-21 17:16:54,518 - INFO - Processed 1,900,000 ways
+2025-09-21 17:16:57,594 - INFO - Processed 2,000,000 ways
+2025-09-21 17:17:00,693 - INFO - Processed 2,100,000 ways
+2025-09-21 17:17:03,645 - INFO - Processed 2,200,000 ways
+2025-09-21 17:17:06,492 - INFO - Processed 2,300,000 ways
+2025-09-21 17:17:08,956 - INFO - Processed 2,400,000 ways
+2025-09-21 17:17:11,990 - INFO - Processed 2,500,000 ways
+2025-09-21 17:17:15,164 - INFO - Processed 2,600,000 ways
+2025-09-21 17:17:17,613 - INFO - Processed 2,700,000 ways
+2025-09-21 17:17:20,898 - INFO - Processed 2,800,000 ways
+2025-09-21 17:17:23,244 - INFO - Processed 2,900,000 ways
+2025-09-21 17:17:26,688 - INFO - Processed 3,000,000 ways
+2025-09-21 17:17:30,345 - INFO - Processed 3,100,000 ways
+2025-09-21 17:17:33,398 - INFO - Processed 3,200,000 ways
+2025-09-21 17:17:35,964 - INFO - Processed 3,300,000 ways
+2025-09-21 17:17:38,435 - INFO - Processed 3,400,000 ways
+2025-09-21 17:17:40,870 - INFO - Processed 3,500,000 ways
+2025-09-21 17:17:42,933 - INFO - Processed 3,600,000 ways
+2025-09-21 17:17:45,495 - INFO - Processed 3,700,000 ways
+2025-09-21 17:17:47,644 - INFO - Processed 3,800,000 ways
+2025-09-21 17:17:49,815 - INFO - Processed 3,900,000 ways
+2025-09-21 17:17:52,020 - INFO - Processed 4,000,000 ways
+2025-09-21 17:17:54,457 - INFO - Processed 4,100,000 ways
+2025-09-21 17:17:57,024 - INFO - Processed 4,200,000 ways
+2025-09-21 17:17:59,896 - INFO - Processed 4,300,000 ways
+2025-09-21 17:18:02,574 - INFO - Processed 4,400,000 ways
+2025-09-21 17:18:05,407 - INFO - Processed 4,500,000 ways
+2025-09-21 17:18:08,993 - INFO - Processed 4,600,000 ways
+2025-09-21 17:18:11,711 - INFO - Processed 4,700,000 ways
+2025-09-21 17:18:13,978 - INFO - Processed 4,800,000 ways
+2025-09-21 17:18:16,375 - INFO - ============================================================
+2025-09-21 17:18:16,375 - INFO - ENTERTAINMENT VENUES EXTRACTION COMPLETED
+2025-09-21 17:18:16,376 - INFO - ============================================================
+2025-09-21 17:18:16,376 - INFO - Processing time: 396.59 seconds
+2025-09-21 17:18:16,377 - INFO - Nodes processed: 37,104,274
+2025-09-21 17:18:16,377 - INFO - Ways processed: 4,892,414
+2025-09-21 17:18:16,378 - INFO - Total entertainment venues found: 203
+2025-09-21 17:18:16,378 - INFO - \nVenue breakdown by type:
+2025-09-21 17:18:16,379 - INFO -   Arts Centre: 20
+2025-09-21 17:18:16,379 - INFO -   Cinema: 7
+2025-09-21 17:18:16,380 - INFO -   Community Centre: 35
+2025-09-21 17:18:16,380 - INFO -   Events Venue: 52
+2025-09-21 17:18:16,381 - INFO -   Exhibition Centre: 41
+2025-09-21 17:18:16,381 - INFO -   Music Venue: 21
+2025-09-21 17:18:16,382 - INFO -   Theatre: 27
+2025-09-21 17:18:16,382 - INFO - \nGeographic bounds:
+2025-09-21 17:18:16,383 - INFO -   Latitude: 43.551923 to 43.646969
+2025-09-21 17:18:16,383 - INFO -   Longitude: 1.355489 to 1.498561
+2025-09-21 17:18:16,384 - INFO - \nExporting venues to: ../toulouse_entertainment_venues.geojson
+2025-09-21 17:18:16,385 - ERROR - Error exporting GeoJSON: 'LocationRepository' object has no attribute 'to_geojson'
+2025-09-21 17:20:41,508 - INFO - Starting Toulouse entertainment venues extraction
+2025-09-21 17:20:41,512 - INFO - Initialized ToulouseEntertainmentExtractor
+2025-09-21 17:20:41,512 - INFO - Processing PBF file: ../data/midi-pyrenees-latest.osm.pbf
+2025-09-21 17:20:48,104 - INFO - Processed 1,000,000 nodes, found 7 venues
+2025-09-21 17:20:53,740 - INFO - Processed 2,000,000 nodes, found 13 venues
+2025-09-21 17:46:58,384 - INFO - Starting Toulouse entertainment venues extraction
+2025-09-21 17:46:58,386 - INFO - Initialized ToulouseEntertainmentExtractor
+2025-09-21 17:46:58,386 - INFO - Processing PBF file: ../data/midi-pyrenees-latest.osm.pbf
+2025-09-21 17:47:01,902 - INFO - Processed 1,000,000 nodes, found 7 venues
+2025-09-21 17:47:05,115 - INFO - Processed 2,000,000 nodes, found 13 venues
+2025-09-21 17:47:10,398 - INFO - Processed 3,000,000 nodes, found 16 venues
+2025-09-21 17:47:13,379 - INFO - Processed 4,000,000 nodes, found 16 venues
+2025-09-21 17:47:17,218 - INFO - Processed 5,000,000 nodes, found 17 venues
+2025-09-21 17:47:23,939 - INFO - Processed 6,000,000 nodes, found 17 venues
+2025-09-21 17:47:27,002 - INFO - Processed 7,000,000 nodes, found 18 venues
+2025-09-21 17:47:30,180 - INFO - Processed 8,000,000 nodes, found 18 venues
+2025-09-21 17:47:33,300 - INFO - Processed 9,000,000 nodes, found 18 venues
+2025-09-21 17:47:36,584 - INFO - Processed 10,000,000 nodes, found 18 venues
+2025-09-21 17:47:39,956 - INFO - Processed 11,000,000 nodes, found 26 venues
+2025-09-21 17:47:43,184 - INFO - Processed 12,000,000 nodes, found 33 venues
+2025-09-21 17:47:46,553 - INFO - Processed 13,000,000 nodes, found 35 venues
+2025-09-21 17:47:49,773 - INFO - Processed 14,000,000 nodes, found 38 venues
+2025-09-21 17:47:53,516 - INFO - Processed 15,000,000 nodes, found 41 venues
+2025-09-21 17:47:56,800 - INFO - Processed 16,000,000 nodes, found 41 venues
+2025-09-21 17:48:00,002 - INFO - Processed 17,000,000 nodes, found 51 venues
+2025-09-21 17:48:03,205 - INFO - Processed 18,000,000 nodes, found 56 venues
+2025-09-21 17:48:06,315 - INFO - Processed 19,000,000 nodes, found 56 venues
+2025-09-21 17:48:09,333 - INFO - Processed 20,000,000 nodes, found 56 venues
+2025-09-21 17:48:12,337 - INFO - Processed 21,000,000 nodes, found 58 venues
+2025-09-21 17:48:15,334 - INFO - Processed 22,000,000 nodes, found 58 venues
+2025-09-21 17:48:18,472 - INFO - Processed 23,000,000 nodes, found 64 venues
+2025-09-21 17:48:21,652 - INFO - Processed 24,000,000 nodes, found 66 venues
+2025-09-21 17:48:24,748 - INFO - Processed 25,000,000 nodes, found 81 venues
+2025-09-21 17:48:27,858 - INFO - Processed 26,000,000 nodes, found 84 venues
+2025-09-21 17:48:31,058 - INFO - Processed 27,000,000 nodes, found 89 venues
+2025-09-21 17:48:34,596 - INFO - Processed 28,000,000 nodes, found 105 venues
+2025-09-21 17:48:37,885 - INFO - Processed 29,000,000 nodes, found 128 venues
+2025-09-21 17:48:41,214 - INFO - Processed 30,000,000 nodes, found 154 venues
+2025-09-21 17:48:44,386 - INFO - Processed 31,000,000 nodes, found 162 venues
+2025-09-21 17:48:47,563 - INFO - Processed 32,000,000 nodes, found 169 venues
+2025-09-21 17:48:50,907 - INFO - Processed 33,000,000 nodes, found 178 venues
+2025-09-21 17:48:54,104 - INFO - Processed 34,000,000 nodes, found 183 venues
+2025-09-21 17:48:57,423 - INFO - Processed 35,000,000 nodes, found 191 venues
+2025-09-21 17:49:02,343 - INFO - Processed 36,000,000 nodes, found 198 venues
+2025-09-21 17:49:05,692 - INFO - Processed 37,000,000 nodes, found 203 venues
+2025-09-21 17:49:13,373 - INFO - ============================================================
+2025-09-21 17:49:13,374 - INFO - ENTERTAINMENT VENUES EXTRACTION COMPLETED
+2025-09-21 17:49:13,374 - INFO - ============================================================
+2025-09-21 17:49:13,375 - INFO - Processing time: 134.99 seconds
+2025-09-21 17:49:13,376 - INFO - Nodes processed: 37,104,274
+2025-09-21 17:49:13,376 - INFO - Ways processed: 4,892,414
+2025-09-21 17:49:13,377 - INFO - Total entertainment venues found: 203
+2025-09-21 17:49:13,377 - INFO - \nVenue breakdown by type:
+2025-09-21 17:49:13,378 - INFO -   Arts Centre: 20
+2025-09-21 17:49:13,378 - INFO -   Cinema: 7
+2025-09-21 17:49:13,379 - INFO -   Community Centre: 35
+2025-09-21 17:49:13,379 - INFO -   Events Venue: 52
+2025-09-21 17:49:13,380 - INFO -   Exhibition Centre: 41
+2025-09-21 17:49:13,380 - INFO -   Music Venue: 21
+2025-09-21 17:49:13,381 - INFO -   Theatre: 27
+2025-09-21 17:49:13,381 - INFO - \nGeographic bounds:
+2025-09-21 17:49:13,382 - INFO -   Latitude: 43.551923 to 43.646969
+2025-09-21 17:49:13,382 - INFO -   Longitude: 1.355489 to 1.498561
+2025-09-21 17:49:13,382 - INFO - \nExporting venues to: ../toulouse_entertainment_venues.geojson
+2025-09-21 17:49:13,394 - INFO - Successfully exported 203 venues to ../toulouse_entertainment_venues.geojson
+2025-09-21 17:49:13,395 - INFO - \nSample entertainment venues:
+2025-09-21 17:49:13,395 - ERROR - Error exporting GeoJSON: 'Location' object has no attribute 'address'
+2025-09-21 17:49:54,907 - INFO - Starting Toulouse entertainment venues extraction
+2025-09-21 17:49:54,909 - INFO - Initialized ToulouseEntertainmentExtractor
+2025-09-21 17:49:54,909 - INFO - Processing PBF file: ../data/midi-pyrenees-latest.osm.pbf
+2025-09-21 17:49:58,384 - INFO - Processed 1,000,000 nodes, found 7 venues
+2025-09-21 17:50:01,632 - INFO - Processed 2,000,000 nodes, found 13 venues
+2025-09-21 17:50:06,952 - INFO - Processed 3,000,000 nodes, found 16 venues
+2025-09-21 17:50:10,026 - INFO - Processed 4,000,000 nodes, found 16 venues
+2025-09-21 17:50:13,869 - INFO - Processed 5,000,000 nodes, found 17 venues
+2025-09-21 17:50:20,786 - INFO - Processed 6,000,000 nodes, found 17 venues
+2025-09-21 17:50:23,873 - INFO - Processed 7,000,000 nodes, found 18 venues
+2025-09-21 17:50:26,991 - INFO - Processed 8,000,000 nodes, found 18 venues
+2025-09-21 17:50:30,033 - INFO - Processed 9,000,000 nodes, found 18 venues
+2025-09-21 17:50:33,433 - INFO - Processed 10,000,000 nodes, found 18 venues
+2025-09-21 17:50:36,798 - INFO - Processed 11,000,000 nodes, found 26 venues
+2025-09-21 17:50:39,955 - INFO - Processed 12,000,000 nodes, found 33 venues
+2025-09-21 17:50:43,286 - INFO - Processed 13,000,000 nodes, found 35 venues
+2025-09-21 17:50:46,606 - INFO - Processed 14,000,000 nodes, found 38 venues
+2025-09-21 17:50:50,030 - INFO - Processed 15,000,000 nodes, found 41 venues
+2025-09-21 17:50:53,172 - INFO - Processed 16,000,000 nodes, found 41 venues
+2025-09-21 17:50:56,307 - INFO - Processed 17,000,000 nodes, found 51 venues
+2025-09-21 17:50:59,329 - INFO - Processed 18,000,000 nodes, found 56 venues
+2025-09-21 17:51:02,340 - INFO - Processed 19,000,000 nodes, found 56 venues
+2025-09-21 17:51:05,354 - INFO - Processed 20,000,000 nodes, found 56 venues
+2025-09-21 17:51:08,494 - INFO - Processed 21,000,000 nodes, found 58 venues
+2025-09-21 17:51:11,617 - INFO - Processed 22,000,000 nodes, found 58 venues
+2025-09-21 17:51:14,738 - INFO - Processed 23,000,000 nodes, found 64 venues
+2025-09-21 17:51:18,073 - INFO - Processed 24,000,000 nodes, found 66 venues
+2025-09-21 17:51:21,242 - INFO - Processed 25,000,000 nodes, found 81 venues
+2025-09-21 17:51:24,384 - INFO - Processed 26,000,000 nodes, found 84 venues
+2025-09-21 17:51:27,655 - INFO - Processed 27,000,000 nodes, found 89 venues
+2025-09-21 17:51:31,245 - INFO - Processed 28,000,000 nodes, found 105 venues
+2025-09-21 17:51:34,697 - INFO - Processed 29,000,000 nodes, found 128 venues
+2025-09-21 17:51:38,205 - INFO - Processed 30,000,000 nodes, found 154 venues
+2025-09-21 17:51:41,430 - INFO - Processed 31,000,000 nodes, found 162 venues
+2025-09-21 17:51:44,756 - INFO - Processed 32,000,000 nodes, found 169 venues
+2025-09-21 17:51:48,119 - INFO - Processed 33,000,000 nodes, found 178 venues
+2025-09-21 17:51:51,429 - INFO - Processed 34,000,000 nodes, found 183 venues
+2025-09-21 17:51:54,918 - INFO - Processed 35,000,000 nodes, found 191 venues
+2025-09-21 17:52:00,089 - INFO - Processed 36,000,000 nodes, found 198 venues
+2025-09-21 17:52:03,591 - INFO - Processed 37,000,000 nodes, found 203 venues
+2025-09-21 17:52:11,295 - INFO - ============================================================
+2025-09-21 17:52:11,296 - INFO - ENTERTAINMENT VENUES EXTRACTION COMPLETED
+2025-09-21 17:52:11,296 - INFO - ============================================================
+2025-09-21 17:52:11,297 - INFO - Processing time: 136.38 seconds
+2025-09-21 17:52:11,297 - INFO - Nodes processed: 37,104,274
+2025-09-21 17:52:11,298 - INFO - Ways processed: 4,892,414
+2025-09-21 17:52:11,299 - INFO - Total entertainment venues found: 203
+2025-09-21 17:52:11,299 - INFO - \nVenue breakdown by type:
+2025-09-21 17:52:11,300 - INFO -   Arts Centre: 20
+2025-09-21 17:52:11,301 - INFO -   Cinema: 7
+2025-09-21 17:52:11,301 - INFO -   Community Centre: 35
+2025-09-21 17:52:11,302 - INFO -   Events Venue: 52
+2025-09-21 17:52:11,303 - INFO -   Exhibition Centre: 41
+2025-09-21 17:52:11,304 - INFO -   Music Venue: 21
+2025-09-21 17:52:11,304 - INFO -   Theatre: 27
+2025-09-21 17:52:11,305 - INFO - \nGeographic bounds:
+2025-09-21 17:52:11,305 - INFO -   Latitude: 43.551923 to 43.646969
+2025-09-21 17:52:11,306 - INFO -   Longitude: 1.355489 to 1.498561
+2025-09-21 17:52:11,306 - INFO - \nExporting venues to: ../toulouse_entertainment_venues.geojson
+2025-09-21 17:52:11,317 - INFO - Successfully exported 203 venues to ../toulouse_entertainment_venues.geojson
+2025-09-21 17:52:11,317 - INFO - \nSample entertainment venues:
+2025-09-21 17:52:11,317 - INFO -   • Théâtre Le Hangar (theatre) - Address not available
+2025-09-21 17:52:11,318 - INFO -   • Théâtre du Pont-Neuf (theatre) - Address not available
+2025-09-21 17:52:11,318 - INFO -   • Théâtre Garonne (theatre) - Address not available
+2025-09-21 17:52:11,318 - INFO -   • Musée du Vieux-Toulouse (exhibition_centre) - Address not available
+2025-09-21 17:52:11,318 - INFO -   • American Cosmograph (cinema) - Address not available
+2025-09-21 17:52:11,319 - INFO -   • ABC (cinema) - Address not available
+2025-09-21 17:52:11,319 - INFO -   • Odyssud (theatre) - Address not available
+2025-09-21 17:52:11,319 - INFO -   • Le Bijou (theatre) - Address not available
+2025-09-21 17:52:11,319 - INFO -   • Le Cratère (cinema) - Address not available
+2025-09-21 17:52:11,320 - INFO -   • Espace St. Cyprien (arts_centre) - Address not available
+2025-09-21 17:52:11,320 - INFO - \nExtraction completed successfully!

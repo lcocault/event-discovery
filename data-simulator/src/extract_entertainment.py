@@ -28,7 +28,7 @@ def main():
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s',
         handlers=[
-            logging.FileHandler('../entertainment_extraction.log'),
+            logging.FileHandler('../data/entertainment_extraction.log'),
             logging.StreamHandler()
         ]
     )
@@ -84,7 +84,7 @@ def main():
             logger.info(f"  Longitude: {bounds['min_lon']:.6f} to {bounds['max_lon']:.6f}")
         
         # Export to GeoJSON
-        output_file = Path("../toulouse_entertainment_venues.geojson")
+        output_file = Path("../data/toulouse_entertainment_venues.geojson")
         logger.info(f"\\nExporting venues to: {output_file}")
         
         try:

@@ -14,6 +14,18 @@ A Python project to simulate family data generation.
    ```bash
    pip install -e .
    ```
+3. Download the OpenStreetMap data:
+   ```bash
+   mkdir -p data
+   wget https://download.geofabrik.de/europe/france/midi-pyrenees-latest.osm.pbf -O data/midi-pyrenees-latest.osm.pbf
+   ```
+4. Extract data from OpenStreetMap to support simulation process:
+   ```bash
+   cd src
+   python3 extract_educational.py
+   python3 extract_entertainment.py
+   python3 extract_hospitality.py
+   ```
 
 ## Usage
 

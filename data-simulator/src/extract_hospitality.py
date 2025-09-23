@@ -28,7 +28,7 @@ def main():
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s',
         handlers=[
-            logging.FileHandler('../hospitality_extraction.log'),
+            logging.FileHandler('../data/hospitality_extraction.log'),
             logging.StreamHandler()
         ]
     )
@@ -63,7 +63,7 @@ def main():
             return 1
         
         # Export to GeoJSON
-        output_file = Path("../toulouse_hospitality_venues.geojson")
+        output_file = Path("../data/toulouse_hospitality_venues.geojson")
         geojson_data = repository.to_geojson()
         
         with open(output_file, 'w', encoding='utf-8') as f:

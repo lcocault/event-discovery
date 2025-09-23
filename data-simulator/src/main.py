@@ -191,7 +191,7 @@ def analyze_families(families: list[Family]) -> None:
 
 def main():
     """Main program entry point."""
-    print("Generating 1000 families with realistic child distribution...")
+    print("Generating 1000 families with realistic characteristics distribution...")
     
     # Generate families
     families = generate_families(1000)

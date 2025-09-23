@@ -2,7 +2,10 @@
 
 import uuid
 from enum import Enum
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from location import Location
 
 
 class Gender(Enum):
@@ -32,9 +35,10 @@ class Religiosity(Enum):
 
 
 class Person:
-    """Represents a person with unique identifier, gender, age, and social category."""
+    """Represents a person with unique identifier, gender, age, social category, and assigned locations."""
     
-    def __init__(self, gender: Gender, age: int, social_category: SocialCategory, person_id: Optional[str] = None):
+    def __init__(self, gender: Gender, age: int, social_category: SocialCategory, person_id: Optional[str] = None, 
+                 school_location: Optional["Location"] = None, work_location: Optional["Location"] = None):
         """
         Initialize a Person instance.
         
@@ -43,19 +47,29 @@ class Person:
             age: Age of the person in years
             social_category: Social/professional category (SocialCategory enum)
             person_id: Optional person identifier. If not provided, a UUID will be generated.
+            school_location: School location for children (Location object)
+            work_location: Work location for employed adults (Location object)
         """
         self.person_id = person_id or str(uuid.uuid4())
         self.gender = gender
         self.age = age
         self.social_category = social_category
+        self.school_location = school_location
+        self.work_location = work_location
     
     def __str__(self) -> str:
         """Return string representation of the person."""
-        return f"Person(id={self.person_id[:8]}..., {self.gender.value}, age={self.age}, {self.social_category.value})"
+        location_info = []
+        if self.school_location:
+            location_info.append(f"school: {self.school_location.name}")
+        if self.work_location:
+            location_info.append(f"work: {self.work_location.name}")
+        location_str = f", {', '.join(location_info)}" if location_info else ""
+        return f"Person(id={self.person_id[:8]}..., {self.gender.value}, age={self.age}, {self.social_category.value}{location_str})"
     
     def __repr__(self) -> str:
         """Return detailed string representation of the person."""
-        return f"Person(person_id='{self.person_id}', gender={self.gender}, age={self.age}, social_category={self.social_category})"
+        return f"Person(person_id='{self.person_id}', gender={self.gender}, age={self.age}, social_category={self.social_category}, school_location={self.school_location}, work_location={self.work_location})"
     
     def __eq__(self, other) -> bool:
         """Check equality based on person_id."""
@@ -68,6 +82,19 @@ class Person:
         return hash(self.person_id)
     
     @property
+    def is_child(self) -> bool:
+        """Return True if person is a child (under 18)."""
+        return self.age < 18
+    
+    @property
+    def is_employed(self) -> bool:
+        """Return True if person has a work location assigned."""
+        return self.work_location is not None
+    
+    @property
+    def is_student(self) -> bool:
+        """Return True if person has a school location assigned."""
+        return self.school_location is not None
     def is_adult(self) -> bool:
         """Return True if person is an adult (18 or older)."""
         return self.age >= 18

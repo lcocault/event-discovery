@@ -5,23 +5,26 @@ from typing import List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from person import Person, Religiosity
+    from location import Position
 
 
 class Family:
-    """Represents a family with a unique identifier, family members, and religiosity level."""
+    """Represents a family with a unique identifier, family members, religiosity level, and home location."""
     
-    def __init__(self, religiosity: Optional["Religiosity"] = None, family_id: Optional[str] = None):
+    def __init__(self, religiosity: Optional["Religiosity"] = None, family_id: Optional[str] = None, home_position: Optional["Position"] = None):
         """
         Initialize a Family instance.
         
         Args:
             religiosity: Religiosity level of the family (Religiosity enum)
             family_id: Optional family identifier. If not provided, a UUID will be generated.
+            home_position: Geographic position of the family home (Position object)
         """
         self.family_id = family_id or str(uuid.uuid4())
         self.parents: List["Person"] = []
         self.children: List["Person"] = []
         self.religiosity = religiosity
+        self.home_position = home_position
     
     def add_parent(self, parent: "Person") -> None:
         """Add a parent to the family."""

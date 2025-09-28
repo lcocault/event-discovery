@@ -27,14 +27,16 @@ class Family:
         self.home_position = home_position
     
     def add_parent(self, parent: "Person") -> None:
-        """Add a parent to the family."""
+        """Add a parent to the family and set the family reference on the person."""
         if parent not in self.parents:
             self.parents.append(parent)
+            parent.family = self
     
     def add_child(self, child: "Person") -> None:
-        """Add a child to the family."""
+        """Add a child to the family and set the family reference on the person."""
         if child not in self.children:
             self.children.append(child)
+            child.family = self
     
     def add_children(self, children: List["Person"]) -> None:
         """Add multiple children to the family."""

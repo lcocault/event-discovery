@@ -261,6 +261,16 @@ def main():
     else:
         print("✗ Some families have duplicate identifiers")
 
+    # Trigger event generation and save events if a second argument is provided
+    if len(sys.argv) > 2:
+        event_file = sys.argv[2]
+        print(f"Generating events and saving to {event_file}...")
+        from extractors.event_generator import EventGenerator
+        event_generator = EventGenerator(families)
+        event_generator.generate_events()
+        event_generator.save_events(event_file)
+        print(f"✓ Events saved to {event_file}")
+
 
 if __name__ == "__main__":
     main()

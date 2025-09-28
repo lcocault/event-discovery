@@ -1,6 +1,8 @@
 __pycache__
+build
 *.egg-info
 *.geojson
 *.json
 *.log
+*.parquet
 *.pbf

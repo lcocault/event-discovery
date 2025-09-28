@@ -38,7 +38,7 @@ class Person:
     """Represents a person with unique identifier, gender, age, social category, and assigned locations."""
     
     def __init__(self, gender: Gender, age: int, social_category: SocialCategory, person_id: Optional[str] = None, 
-                 school_location: Optional["Location"] = None, work_location: Optional["Location"] = None):
+                 school_location: Optional["Location"] = None, work_location: Optional["Location"] = None, family=None):
         """
         Initialize a Person instance.
         
@@ -49,6 +49,7 @@ class Person:
             person_id: Optional person identifier. If not provided, a UUID will be generated.
             school_location: School location for children (Location object)
             work_location: Work location for employed adults (Location object)
+            family: Reference to the Family instance this person belongs to
         """
         self.person_id = person_id or str(uuid.uuid4())
         self.gender = gender
@@ -56,6 +57,7 @@ class Person:
         self.social_category = social_category
         self.school_location = school_location
         self.work_location = work_location
+        self.family = family
     
     def __str__(self) -> str:
         """Return string representation of the person."""

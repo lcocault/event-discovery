@@ -1,7 +1,7 @@
 """Family generation utilities with child distribution logic."""
 
 import random
-from typing import List
+from typing import List, Tuple
 from models.family import Family
 from models.person import Person, Gender, SocialCategory, Religiosity
 
@@ -138,8 +138,19 @@ class FamilyGenerator:
     def _generate_parents(self) -> List[Person]:
         """Generate parents for a family (typically 2 adults)."""
         # Generate 2 parents (adults aged 25-75)
-        parent1 = self._generate_person(min_age=25, max_age=75)
-        parent2 = self._generate_person(min_age=25, max_age=75)
+        # 90% chance: age difference < 5 years
+        if random.random() < 0.9:
+            age1 = random.randint(25, 75)
+            # Pick age2 within 5 years of age1, but still in [25, 75]
+            min_age2 = max(25, age1 - 4)
+            max_age2 = min(75, age1 + 4)
+            age2 = random.randint(min_age2, max_age2)
+            parent1 = self._generate_person(min_age=age1, max_age=age1)
+            parent2 = self._generate_person(min_age=age2, max_age=age2)
+        else:
+            # 10% chance: any ages 25-75
+            parent1 = self._generate_person(min_age=25, max_age=75)
+            parent2 = self._generate_person(min_age=25, max_age=75)
         return [parent1, parent2]
     
     def _generate_children(self, count: int) -> List[Person]:
@@ -151,6 +162,41 @@ class FamilyGenerator:
             children.append(child)
         return children
     
+    def _generate_parents_and_children(self, child_count: int) -> Tuple[List[Person], List[Person]]:
+        """
+        Generate parents and children so that the age difference between the older parent and youngest child
+        is always between 20 and 45, and generally around 30.
+        """
+        # If there are children, set youngest child's age so that parent-child age difference is 20-45 (centered at 30)
+        if child_count > 0:
+            # Pick age difference: normal distribution centered at 30, clipped to [20, 45]
+            import random
+            import math
+            diff = int(min(45, max(20, random.gauss(30, 5))))
+            # Youngest child age
+            youngest_child_age = random.randint(0, 17)
+            # Older parent age
+            older_parent_age = youngest_child_age + diff
+            older_parent_age = min(75, max(25, older_parent_age))
+            # Other parent age within 5 years
+            min_other = max(25, older_parent_age - 4)
+            max_other = min(75, older_parent_age + 4)
+            other_parent_age = random.randint(min_other, max_other)
+            # Generate parents
+            parent1 = self._generate_person(min_age=older_parent_age, max_age=older_parent_age)
+            parent2 = self._generate_person(min_age=other_parent_age, max_age=other_parent_age)
+            # Generate children
+            children = [self._generate_person(min_age=youngest_child_age, max_age=youngest_child_age)]
+            # Remaining children: ages 0-17, but not younger than youngest_child_age
+            for _ in range(child_count - 1):
+                age = random.randint(youngest_child_age, 17)
+                children.append(self._generate_person(min_age=age, max_age=age))
+            return [parent1, parent2], children
+        else:
+            # No children: parents as before
+            parents = self._generate_parents()
+            return parents, []
+
     def generate_family(self) -> Family:
         """Generate a single family with random parents and children based on distribution."""
         # Determine family religiosity
@@ -176,5 +222,100 @@ class FamilyGenerator:
         families = []
         for _ in range(count):
             family = self.generate_family()
+            families.append(family)
+        return families
+    
+    def save_families(self, families: List[Family], file_path: str):
+        """Save families to a JSON file."""
+        import json
+        from models.location import Position
+        
+        def family_to_dict(family: Family):
+            return {
+                "family_id": family.family_id,
+                "religiosity": family.religiosity.value if family.religiosity else None,
+                "home_position": {
+                    "latitude": family.home_position.latitude if family.home_position else None,
+                    "longitude": family.home_position.longitude if family.home_position else None
+                },
+                "parents": [
+                    {
+                        "person_id": p.person_id,
+                        "gender": p.gender.value,
+                        "age": p.age,
+                        "social_category": p.social_category.value,
+                        "work_location": {
+                            "name": p.work_location.name if p.work_location else None,
+                            "type": p.work_location.location_type.value if p.work_location else None,
+                            "latitude": p.work_location.position.latitude if p.work_location else None,
+                            "longitude": p.work_location.position.longitude if p.work_location else None
+                        } if p.work_location else None
+                    } for p in family.parents
+                ],
+                "children": [
+                    {
+                        "person_id": c.person_id,
+                        "gender": c.gender.value,
+                        "age": c.age,
+                        "social_category": c.social_category.value,
+                        "school_location": {
+                            "name": c.school_location.name if c.school_location else None,
+                            "type": c.school_location.location_type.value if c.school_location else None,
+                            "latitude": c.school_location.position.latitude if c.school_location else None,
+                            "longitude": c.school_location.position.longitude if c.school_location else None
+                        } if c.school_location else None
+                    } for c in family.children
+                ]
+            }
+        
+        data = [family_to_dict(fam) for fam in families]
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+    def load_families(self, file_path: str) -> List[Family]:
+        """Load families from a JSON file."""
+        import json
+        from models.location import Position, Location, LocationType
+        from models.person import Gender, SocialCategory, Person, Religiosity
+        families = []
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        for fam_dict in data:
+            religiosity = Religiosity(fam_dict["religiosity"]) if fam_dict["religiosity"] else None
+            family = Family(family_id=fam_dict["family_id"], religiosity=religiosity)
+            # Home position
+            hp = fam_dict.get("home_position")
+            if hp and hp["latitude"] is not None and hp["longitude"] is not None:
+                family.home_position = Position(hp["latitude"], hp["longitude"])
+            # Parents
+            for p in fam_dict["parents"]:
+                gender = Gender(p["gender"])
+                age = p["age"]
+                social_category = SocialCategory(p["social_category"])
+                person = Person(gender=gender, age=age, social_category=social_category, person_id=p["person_id"])
+                wl = p.get("work_location")
+                if wl and wl["name"]:
+                    person.work_location = Location(
+                        name=wl["name"],
+                        location_type=LocationType(wl["type"]),
+                        position=Position(wl["latitude"], wl["longitude"]),
+                        additional_info={}
+                    )
+                family.add_parent(person)
+            # Children
+            for c in fam_dict["children"]:
+                gender = Gender(c["gender"])
+                age = c["age"]
+                social_category = SocialCategory(c["social_category"])
+                person = Person(gender=gender, age=age, social_category=social_category, person_id=c["person_id"])
+                sl = c.get("school_location")
+                if sl and sl["name"]:
+                    person.school_location = Location(
+                        name=sl["name"],
+                        location_type=LocationType(sl["type"]),
+                        position=Position(sl["latitude"], sl["longitude"]),
+                        additional_info={}
+                    )
+                family.add_child(person)
             families.append(family)
         return families

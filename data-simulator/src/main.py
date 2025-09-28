@@ -4,6 +4,10 @@ from collections import Counter
 from models.family import Family
 from extractors.family_generator import FamilyGenerator
 from models.person import SocialCategory, Religiosity
+from location_assigner import LocationAssigner
+from models.location import Position
+import sys
+import os
 
 
 def generate_families(count: int = 1000) -> list[Family]:
@@ -191,13 +195,51 @@ def analyze_families(families: list[Family]) -> None:
 
 def main():
     """Main program entry point."""
-    print("Generating 1000 families with realistic characteristics distribution...")
-    
-    # Generate families
-    families = generate_families(1000)
-    
-    print(f"Successfully generated {len(families)} families.")
-    
+    # Accept file path argument
+    if len(sys.argv) > 1:
+        family_file = sys.argv[1]
+    else:
+        family_file = "families.json"
+    print(f"Using family file: {family_file}")
+
+    generator = FamilyGenerator()
+    if os.path.exists(family_file):
+        print(f"Loading families from {family_file}...")
+        families = generator.load_families(family_file)
+        print(f"Loaded {len(families)} families from file.")
+    else:
+        print("Generating 1000 families with realistic characteristics distribution...")
+        families = generator.generate_families(1000)
+        print(f"Successfully generated {len(families)} families.")
+
+        # Assign home, work, and school locations to each family
+        assigner = LocationAssigner(
+            "toulouse_educational_institutions.geojson",
+            "toulouse_hospitality_venues.geojson"
+        )
+        for family in families:
+            assigner.assign_locations_to_family(family)
+        print("✓ Locations assigned to all families.")
+
+        print(f"Saving families to {family_file}...")
+        generator.save_families(families, family_file)
+        print(f"✓ Families saved to {family_file}")
+
+    # Verify location assignment
+    missing_home = sum(1 for fam in families if not fam.home_position)
+    missing_work = sum(1 for fam in families for p in fam.parents if not p.work_location)
+    missing_school = sum(1 for fam in families for c in fam.children if not c.school_location)
+    print(f"Location assignment check: {missing_home} families missing home, {missing_work} parents missing work, {missing_school} children missing school location.")
+    if missing_home or missing_work or missing_school:
+        print("WARNING: Some locations were not assigned. Check assignment logic and input data.")
+
+    # Print assignment stats summary
+    print("\nLocation Assignment Summary:")
+    print(f"Families missing home: {missing_home}")
+    print(f"Parents missing work: {missing_work}")
+    print(f"Children missing school: {missing_school}")
+    print("(If any value above is nonzero, check assignment logic and input data)")
+
     # Display first 5 families as examples
     print("\nFirst 5 families:")
     for i, family in enumerate(families[:5]):
@@ -206,14 +248,14 @@ def main():
             print(f"   Parent {j+1}: {parent}")
         for j, child in enumerate(family.children):
             print(f"   Child {j+1}: {child}")
-    
+
     # Analyze family distribution
     analyze_families(families)
-    
+
     # Verify all families have unique IDs
     unique_ids = set(family.family_id for family in families)
     print(f"\nVerification: {len(unique_ids)} unique family IDs out of {len(families)} families")
-    
+
     if len(unique_ids) == len(families):
         print("✓ All families have unique identifiers")
     else:

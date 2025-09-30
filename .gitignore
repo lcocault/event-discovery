@@ -3,6 +3,7 @@ build
 *.egg-info
 *.geojson
 *.json
+*.kml
 *.log
 *.parquet
 *.pbf

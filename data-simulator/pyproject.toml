@@ -19,6 +19,7 @@ classifiers = [
 dependencies = [
     "osmium>=3.6.0",
     "geopandas>=0.14.0",
+    "pandas>=2.3.3",
     "pyarrow>=14.0.0",
 ]
 

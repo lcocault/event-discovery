@@ -9,6 +9,52 @@ from models.location import LocationType
 
 
 class EventGenerator:
+    def _generate_show_events(self, person, family, day_in_year, day_in_week):
+        """
+        Generate show (cinema, theatre, concert, etc.) events for a person based on their family's social category.
+        Farmers = 0%, Artisans = 1%, Employees/Workers = 3%, Inactive/Retirees = 5%, Others = 10%.
+        Retirees/Inactive can go anytime, others go in the evening (19-22).
+        """
+        import random
+        from models.person import SocialCategory
+
+        if not family or not family.social_category:
+            return
+        cat = family.social_category
+        # Probabilities per day
+        if cat == SocialCategory.FARMERS:
+            prob = 0.0
+        elif cat == SocialCategory.ARTISANS_MERCHANTS_ENTREPRENEURS:
+            prob = 0.01
+        elif cat in (SocialCategory.EMPLOYEES, SocialCategory.WORKERS):
+            prob = 0.03
+        elif cat in (SocialCategory.INACTIVE, SocialCategory.RETIREES):
+            prob = 0.05
+        else:
+            prob = 0.10
+        if random.random() < prob:
+            # Pick a show type and time
+            show_types = ["CINEMA", "THEATRE", "MUSIC_VENUE"]
+            show_type = random.choice(show_types)
+            # Retirees/Inactive: any time slot, others: evening
+            if cat in (SocialCategory.INACTIVE, SocialCategory.RETIREES):
+                time_slot = random.choice(list(range(10, 22)))
+            else:
+                time_slot = random.choice([19, 20, 21, 22])
+            # Find nearest show location from home
+            pos = family.home_position if family.home_position else None
+            show_loc = self._find_nearest_location(pos, show_type) if pos else None
+            if show_loc:
+                self.events.append(
+                    Event(
+                        person_id=person.person_id,
+                        day_in_year=day_in_year,
+                        day_in_week=day_in_week,
+                        time_slot=time_slot,
+                        location=show_loc.position,
+                    )
+                )
+
     """
     Generates daily activity events for each member of a family over one year.
     """
@@ -31,6 +77,7 @@ class EventGenerator:
                     self._generate_religious_events(
                         person, family, day_in_year, day_in_week
                     )
+                    self._generate_show_events(person, family, day_in_year, day_in_week)
 
     def _generate_base_events(self, person, day_in_year, day_in_week):
         for time_slot in range(24):
@@ -53,7 +100,7 @@ class EventGenerator:
     def _generate_bar_events(self, person, family, day_in_year, day_in_week):
         # Students aged 18+ go to nearest bar after school (assume after 16:00)
         # If you want to use social_category for bar logic, use family.social_category
-        if person.is_student() and person.is_adult():
+        if person.is_student and person.is_adult:
             if day_in_week < 5:  # Mon-Fri
                 bar = self._find_nearest_location(
                     person.school_location.position, "BAR"

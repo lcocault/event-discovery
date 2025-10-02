@@ -143,10 +143,11 @@ class FamilyGenerator:
             )[0]
 
     def _generate_person(self, min_age: int = 0, max_age: int = 100) -> Person:
-        """Generate a random person with random gender and age."""
+        """Generate a random person with random gender, age, and social category."""
         gender = random.choice(list(Gender))
         age = random.randint(min_age, max_age)
-        return Person(gender=gender, age=age)
+        social_category = self._get_social_category_for_age(age)
+        return Person(gender=gender, age=age, social_category=social_category)
 
     def _generate_parents(self) -> List[Person]:
         """Generate parents for a family (typically 2 adults)."""
@@ -227,12 +228,7 @@ class FamilyGenerator:
         religiosity = self._get_random_religiosity()
         # Assign social category based on the older parent (or random adult if no children)
         parents = self._generate_parents()
-        parent_ages = [p.age for p in parents]
-        if parent_ages:
-            social_category = self._get_social_category_for_age(max(parent_ages))
-        else:
-            social_category = SocialCategory.INACTIVE
-        family = Family(religiosity=religiosity, social_category=social_category)
+        family = Family(religiosity=religiosity)
         for parent in parents:
             family.add_parent(parent)
         child_count = self._get_random_child_count()
@@ -258,9 +254,6 @@ class FamilyGenerator:
             return {
                 "family_id": family.family_id,
                 "religiosity": family.religiosity.value if family.religiosity else None,
-                "social_category": family.social_category.value
-                if family.social_category
-                else None,
                 "home_position": {
                     "latitude": family.home_position.latitude
                     if family.home_position
@@ -274,6 +267,9 @@ class FamilyGenerator:
                         "person_id": p.person_id,
                         "gender": p.gender.value,
                         "age": p.age,
+                        "social_category": p.social_category.value
+                        if p.social_category
+                        else None,
                         "work_location": {
                             "name": p.work_location.name if p.work_location else None,
                             "type": p.work_location.location_type.value
@@ -296,6 +292,9 @@ class FamilyGenerator:
                         "person_id": c.person_id,
                         "gender": c.gender.value,
                         "age": c.age,
+                        "social_category": c.social_category.value
+                        if c.social_category
+                        else None,
                         "school_location": {
                             "name": c.school_location.name
                             if c.school_location
@@ -336,15 +335,9 @@ class FamilyGenerator:
                 if fam_dict["religiosity"]
                 else None
             )
-            social_category = (
-                SocialCategory(fam_dict["social_category"])
-                if fam_dict.get("social_category")
-                else None
-            )
             family = Family(
                 family_id=fam_dict["family_id"],
                 religiosity=religiosity,
-                social_category=social_category,
             )
             # Home position
             hp = fam_dict.get("home_position")
@@ -354,7 +347,17 @@ class FamilyGenerator:
             for p in fam_dict["parents"]:
                 gender = Gender(p["gender"])
                 age = p["age"]
-                person = Person(gender=gender, age=age, person_id=p["person_id"])
+                social_category = (
+                    SocialCategory(p["social_category"])
+                    if p.get("social_category")
+                    else None
+                )
+                person = Person(
+                    gender=gender,
+                    age=age,
+                    social_category=social_category,
+                    person_id=p["person_id"],
+                )
                 wl = p.get("work_location")
                 if wl and wl["name"]:
                     person.work_location = Location(
@@ -368,7 +371,17 @@ class FamilyGenerator:
             for c in fam_dict["children"]:
                 gender = Gender(c["gender"])
                 age = c["age"]
-                person = Person(gender=gender, age=age, person_id=c["person_id"])
+                social_category = (
+                    SocialCategory(c["social_category"])
+                    if c.get("social_category")
+                    else None
+                )
+                person = Person(
+                    gender=gender,
+                    age=age,
+                    social_category=social_category,
+                    person_id=c["person_id"],
+                )
                 sl = c.get("school_location")
                 if sl and sl["name"]:
                     person.school_location = Location(

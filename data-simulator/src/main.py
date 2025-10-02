@@ -80,11 +80,11 @@ def analyze_families(families: list[Family]) -> None:
             f"{child_count:<10} {expected:<10.1f}% {actual:<10.1f}% {difference:+5.1f}%"
         )
 
-    # Social category analysis
+    # Social category analysis (now on Person)
     social_categories = Counter(
-        person.family.social_category
+        person.social_category
         for person in all_people
-        if person.family and person.family.social_category
+        if person.social_category is not None
     )
 
     print(f"\nSocial Category Distribution ({len(all_people)} people):")
@@ -112,9 +112,9 @@ def analyze_families(families: list[Family]) -> None:
     adults_15_plus = [person for person in all_people if person.age >= 15]
     if adults_15_plus:
         adult_social_categories = Counter(
-            person.family.social_category
+            person.social_category
             for person in adults_15_plus
-            if person.family and person.family.social_category
+            if person.social_category is not None
         )
 
         print(
@@ -130,11 +130,11 @@ def analyze_families(families: list[Family]) -> None:
             english_name = category_names[category]
             print(f"{english_name:<45}: {count:4d} ({percentage:5.1f}%)")
 
-    # Breakdown of inactive category by age
+    # Breakdown of inactive category by age (now on Person)
     inactive_people = [
         person
         for person in all_people
-        if person.family and person.family.social_category == SocialCategory.INACTIVE
+        if person.social_category == SocialCategory.INACTIVE
     ]
     inactive_children = [person for person in inactive_people if person.age < 15]
     inactive_adults = [person for person in inactive_people if person.age >= 15]
@@ -236,8 +236,8 @@ def main():
 
         # Assign home, work, and school locations to each family
         assigner = LocationAssigner(
-            "toulouse_educational_institutions.geojson",
-            "toulouse_hospitality_venues.geojson",
+            "data/toulouse_educational_institutions.geojson",
+            "data/toulouse_hospitality_venues.geojson",
         )
         for family in families:
             assigner.assign_locations_to_family(family)

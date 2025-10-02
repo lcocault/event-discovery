@@ -46,7 +46,6 @@ class Person:
         self,
         gender: Gender,
         age: int,
-        social_category: SocialCategory,
         person_id: Optional[str] = None,
         school_location: Optional["Location"] = None,
         work_location: Optional["Location"] = None,
@@ -58,7 +57,6 @@ class Person:
         Args:
             gender: Gender of the person (Gender enum)
             age: Age of the person in years
-            social_category: Social/professional category (SocialCategory enum)
             person_id: Optional person identifier. If not provided, a UUID will be generated.
             school_location: School location for children (Location object)
             work_location: Work location for employed adults (Location object)
@@ -67,7 +65,6 @@ class Person:
         self.person_id = person_id or str(uuid.uuid4())
         self.gender = gender
         self.age = age
-        self.social_category = social_category
         self.school_location = school_location
         self.work_location = work_location
         self.family = family
@@ -80,11 +77,21 @@ class Person:
         if self.work_location:
             location_info.append(f"work: {self.work_location.name}")
         location_str = f", {', '.join(location_info)}" if location_info else ""
-        return f"Person(id={self.person_id[:8]}..., {self.gender.value}, age={self.age}, {self.social_category.value}{location_str})"
+        social_category_str = (
+            f", {self.family.social_category.value}"
+            if self.family and self.family.social_category
+            else ""
+        )
+        return f"Person(id={self.person_id[:8]}..., {self.gender.value}, age={self.age}{social_category_str}{location_str})"
 
     def __repr__(self) -> str:
         """Return detailed string representation of the person."""
-        return f"Person(person_id='{self.person_id}', gender={self.gender}, age={self.age}, social_category={self.social_category}, school_location={self.school_location}, work_location={self.work_location})"
+        social_category_str = (
+            f", social_category={self.family.social_category}"
+            if self.family and self.family.social_category
+            else ""
+        )
+        return f"Person(person_id='{self.person_id}', gender={self.gender}, age={self.age}{social_category_str}, school_location={self.school_location}, work_location={self.work_location})"
 
     def __eq__(self, other) -> bool:
         """Check equality based on person_id."""

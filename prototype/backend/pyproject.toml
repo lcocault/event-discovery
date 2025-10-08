@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "event-discovery-backend"
+version = "0.1.0"
+description = "Backend for event discovery prototype. Handles event and location data, scoring, and database operations."
+authors = [
+    { name = "Grégory Pradels" }
+]
+requires-python = ">=3.10"
+
+dependencies = [
+    "fastapi>=0.110.1",
+    "pandas>=2.3.3",
+    "requests>=2.32.4",
+    "uvicorn>=0.29.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=22.0",
+    "isort>=5.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"

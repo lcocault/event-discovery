@@ -11,6 +11,7 @@ import os
 import sys
 import time
 import json
+
 from pathlib import Path
 from extraction.extractors.toulouse_entertainment_extractor import (
     ToulouseEntertainmentExtractor,

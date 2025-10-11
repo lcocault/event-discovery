@@ -15,13 +15,14 @@ import json
 from pathlib import Path
 
 # Add src to Python path
-script_dir = Path(__file__).parent
-src_dir = script_dir
-sys.path.insert(0, str(src_dir))
 
 from extraction.extractors.toulouse_educational_extractor import (
     ToulouseEducationalExtractor,
 )
+
+script_dir = Path(__file__).parent
+src_dir = script_dir
+sys.path.insert(0, str(src_dir))
 
 
 os.makedirs(os.path.join(os.path.dirname(__file__), "data"), exist_ok=True)

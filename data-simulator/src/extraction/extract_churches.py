@@ -14,11 +14,12 @@ import json
 from pathlib import Path
 
 # Add src to Python path
+
+from extraction.extractors.toulouse_church_extractor import ToulouseChurchExtractor
+
 script_dir = Path(__file__).parent
 src_dir = script_dir
 sys.path.insert(0, str(src_dir))
-
-from extraction.extractors.toulouse_church_extractor import ToulouseChurchExtractor
 
 
 os.makedirs(os.path.join(os.path.dirname(__file__), "data"), exist_ok=True)

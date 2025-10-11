@@ -1,4 +1,5 @@
-"""Location repository for managing collections of locations."""
+# placeholder for location_repository.py"""Location repository for managing collections of locations."""
+
 
 import json
 import pickle
@@ -6,12 +7,11 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 from collections import defaultdict
 
-from simulation.models.location import Location, LocationType, Position, OpeningHours
+from .location import LocationType, Position, OpeningHours
 
 
 class LocationRepository:
     def add_locations_from_geojson(self, filepath: str) -> None:
-        print(f"[DEBUG] Entered add_locations_from_geojson for {filepath}", flush=True)
         """
         Load locations from a GeoJSON file and add them to the repository.
         Args:
@@ -22,35 +22,17 @@ class LocationRepository:
         features = data.get("features", [])
         for feature in features:
             props = feature.get("properties", {})
-            print(f"[DEBUG] Processing feature properties: {props}", flush=True)
             coords = feature.get("geometry", {}).get("coordinates", [None, None])
             lat = coords[1]
             lon = coords[0]
             name = props.get("name", "Unnamed")
             location_type_str = props.get("location_type", None)
-            location_type = None
-            if location_type_str:
-                # Try direct enum value match
-                try:
-                    location_type = LocationType(location_type_str)
-                except Exception:
-                    # Try case-insensitive match to value or name
-                    for t in LocationType:
-                        if (
-                            t.value.lower() == location_type_str.strip().lower()
-                            or t.name.lower() == location_type_str.strip().lower()
-                        ):
-                            location_type = t
-                            break
-                print(
-                    f"[DEBUG] GeoJSON: location_type_str='{location_type_str}' resolved to location_type={location_type}",
-                    flush=True,
+            try:
+                location_type = (
+                    LocationType(location_type_str) if location_type_str else None
                 )
-                if location_type is None:
-                    print(
-                        f"[WARN] Could not match location_type '{location_type_str}' for location '{name}' in {filepath}",
-                        flush=True,
-                    )
+            except Exception:
+                location_type = None
             opening_hours = props.get("opening_hours", None)
             # Use OpeningHours if present and not 'Hours not specified'
             oh_obj = None
@@ -87,7 +69,6 @@ class LocationRepository:
     """Repository for managing and querying collections of locations."""
 
     def __init__(self):
-        print("[DEBUG] LocationRepository instantiated", flush=True)
         """Initialize an empty location repository."""
         self._locations: Dict[str, Location] = {}
         self._locations_by_type: Dict[LocationType, Set[str]] = defaultdict(set)

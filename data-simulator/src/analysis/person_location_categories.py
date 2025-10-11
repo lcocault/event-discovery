@@ -2,7 +2,7 @@ import shapely.wkb
 import argparse
 import pandas as pd
 import logging
-from simulation.models.location_repository import LocationRepository
+from models.location_repository import LocationRepository
 
 # Set up logger
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")

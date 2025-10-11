@@ -5,11 +5,11 @@ import geopandas as gpd
 from shapely.geometry import Point
 from datetime import datetime, timedelta
 from typing import List
-from simulation.models.location_repository import LocationRepository
-from simulation.models.family import Family
-from simulation.models.person import Person
-from simulation.models.location import LocationType
-from simulation.models.event import Event
+from models.location_repository import LocationRepository
+from models.family import Family
+from models.person import Person
+from models.location import LocationType
+from models.event import Event
 
 # Set up logger
 logger = logging.getLogger("event_generator")
@@ -171,7 +171,7 @@ class EventGenerator:
         Retirees/Inactive can go anytime, others go in the evening (19-22).
         """
         import random
-        from simulation.models.person import SocialCategory
+    from models.person import SocialCategory
 
         if not family or not family.social_category:
             return
@@ -247,7 +247,7 @@ class EventGenerator:
 
 # --- Utility function to load families ---
 def load_families(path):
-    from simulation.models.family import Family
+    from models.family import Family
 
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -261,7 +261,7 @@ def load_families(path):
         # Set religiosity if present
         relig = fam.get("religiosity")
         if relig:
-            from simulation.models.person import Religiosity
+            from models.person import Religiosity
 
             try:
                 family.religiosity = Religiosity(relig.upper())
@@ -270,7 +270,7 @@ def load_families(path):
         # Set home position
         pos = fam.get("home_position")
         if pos:
-            from simulation.models.location import Position
+            from models.location import Position
 
             family.home_position = Position(
                 latitude=pos["latitude"], longitude=pos["longitude"]
@@ -378,9 +378,9 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     import sys
     import os
-    from simulation.models.family import Family
-    from simulation.models.location_repository import LocationRepository
-    from simulation.models.person import Person
+    from models.family import Family
+    from models.location_repository import LocationRepository
+    from models.person import Person
     from simulation.family_generator import FamilyGenerator
 
     # Load families
@@ -411,7 +411,7 @@ if __name__ == "__main__":
 
     # Debug: print number of locations loaded for each type
     logger.debug("Locations loaded by type:")
-    from simulation.models.location import LocationType
+    from models.location import LocationType
 
     for loc_type in LocationType:
         count = len(location_repo.get_locations_by_type(loc_type))

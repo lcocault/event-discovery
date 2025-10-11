@@ -4,8 +4,8 @@ import random
 from typing import List, Tuple
 from collections import Counter
 from simulation.location_assigner import LocationAssigner
-from simulation.models.family import Family
-from simulation.models.person import Person, Gender, SocialCategory, Religiosity
+from models.family import Family
+from models.person import Person, Gender, SocialCategory, Religiosity
 
 
 """Family generation utilities with child distribution logic."""
@@ -327,8 +327,8 @@ class FamilyGenerator:
     def load_families(self, file_path: str) -> List[Family]:
         """Load families from a JSON file."""
         import json
-        from simulation.models.location import Position, Location, LocationType
-        from simulation.models.person import Gender, SocialCategory, Person, Religiosity
+    from models.location import Position, Location, LocationType
+    from models.person import Gender, SocialCategory, Person, Religiosity
 
         families = []
         with open(file_path, "r", encoding="utf-8") as f:

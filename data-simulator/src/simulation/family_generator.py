@@ -1,9 +1,14 @@
-"""Family generation utilities with child distribution logic."""
-
+import sys
+import os
 import random
 from typing import List, Tuple
-from models.family import Family
-from models.person import Person, Gender, SocialCategory, Religiosity
+from collections import Counter
+from simulation.location_assigner import LocationAssigner
+from simulation.models.family import Family
+from simulation.models.person import Person, Gender, SocialCategory, Religiosity
+
+
+"""Family generation utilities with child distribution logic."""
 
 
 class FamilyGenerator:
@@ -187,7 +192,6 @@ class FamilyGenerator:
         if child_count > 0:
             # Pick age difference: normal distribution centered at 30, clipped to [20, 45]
             import random
-            import math
 
             diff = int(min(45, max(20, random.gauss(30, 5))))
             # Youngest child age
@@ -248,7 +252,7 @@ class FamilyGenerator:
     def save_families(self, families: List[Family], file_path: str):
         """Save families to a JSON file."""
         import json
-        from models.location import Position
+        # Position import not needed here, already imported at top
 
         def family_to_dict(family: Family):
             return {
@@ -323,8 +327,8 @@ class FamilyGenerator:
     def load_families(self, file_path: str) -> List[Family]:
         """Load families from a JSON file."""
         import json
-        from models.location import Position, Location, LocationType
-        from models.person import Gender, SocialCategory, Person, Religiosity
+        from simulation.models.location import Position, Location, LocationType
+        from simulation.models.person import Gender, SocialCategory, Person, Religiosity
 
         families = []
         with open(file_path, "r", encoding="utf-8") as f:
@@ -393,3 +397,206 @@ class FamilyGenerator:
                 family.add_child(person)
             families.append(family)
         return families
+
+
+# --- Script entry point logic from main.py ---
+def analyze_families(families: list[Family]):
+    """Analyze and display statistics about the generated families."""
+    child_counts: dict[int, int] = {}
+    total_people = 0
+    all_people = []
+    for family in families:
+        num_children = family.num_children
+        child_counts[num_children] = child_counts.get(num_children, 0) + 1
+        total_people += family.total_members
+        all_people.extend(family.parents)
+        all_people.extend(family.children)
+    print(f"\nFamily Analysis ({len(families)} families, {total_people} total people):")
+    print("=" * 60)
+    for child_count in sorted(child_counts.keys()):
+        count = child_counts[child_count]
+        percentage = (count / len(families)) * 100
+        print(f"Families with {child_count} children: {count:4d} ({percentage:5.1f}%)")
+    expected_distribution = {0: 40.0, 1: 20.0, 2: 25.0, 3: 10.0, 4: 5.0}
+    print("\nExpected vs Actual Distribution:")
+    print("=" * 60)
+    print(f"{'Children':<10} {'Expected':<10} {'Actual':<10} {'Difference':<12}")
+    print("-" * 60)
+    for child_count in range(5):
+        expected = expected_distribution.get(child_count, 0.0)
+        actual_count = child_counts.get(child_count, 0)
+        actual = (actual_count / len(families)) * 100
+        difference = actual - expected
+        print(
+            f"{child_count:<10} {expected:<10.1f}% {actual:<10.1f}% {difference:+5.1f}%"
+        )
+    social_categories = Counter(
+        person.social_category
+        for person in all_people
+        if person.social_category is not None
+    )
+    print(f"\nSocial Category Distribution ({len(all_people)} people):")
+    print("=" * 60)
+    category_names = {
+        SocialCategory.FARMERS: "Farmers",
+        SocialCategory.ARTISANS_MERCHANTS_ENTREPRENEURS: "Artisans, Merchants, Entrepreneurs",
+        SocialCategory.EXECUTIVES_HIGHER_INTELLECTUAL_PROFESSIONS: "Executives and Higher Intellectual Professions",
+        SocialCategory.INTERMEDIATE_PROFESSIONS: "Intermediate Professions",
+        SocialCategory.EMPLOYEES: "Employees",
+        SocialCategory.WORKERS: "Workers",
+        SocialCategory.RETIREES: "Retirees",
+        SocialCategory.INACTIVE: "Other Inactive Persons",
+    }
+    for category in SocialCategory:
+        count = social_categories[category]
+        percentage = (count / len(all_people)) * 100
+        english_name = category_names[category]
+        print(f"{english_name:<45}: {count:4d} ({percentage:5.1f}%)")
+    adults_15_plus = [person for person in all_people if person.age >= 15]
+    if adults_15_plus:
+        adult_social_categories = Counter(
+            person.social_category
+            for person in adults_15_plus
+            if person.social_category is not None
+        )
+        print(
+            f"\nSocial Category Distribution - Adults 15+ only ({len(adults_15_plus)} people):"
+        )
+        print("=" * 60)
+        print("(This matches INSEE demographic data for comparison)")
+        print("-" * 60)
+        for category in SocialCategory:
+            count = adult_social_categories[category]
+            percentage = (count / len(adults_15_plus)) * 100
+            english_name = category_names[category]
+            print(f"{english_name:<45}: {count:4d} ({percentage:5.1f}%)")
+    inactive_people = [
+        person
+        for person in all_people
+        if person.social_category == SocialCategory.INACTIVE
+    ]
+    inactive_children = [person for person in inactive_people if person.age < 15]
+    inactive_adults = [person for person in inactive_people if person.age >= 15]
+    print("\nInactive Category Breakdown:")
+    print("=" * 60)
+    print(
+        f"Children under 15: {len(inactive_children):4d} ({len(inactive_children)/len(all_people)*100:5.1f}% of total population)"
+    )
+    print(
+        f"Adults 15+:        {len(inactive_adults):4d} ({len(inactive_adults)/len(all_people)*100:5.1f}% of total population)"
+    )
+    if adults_15_plus:
+        print(
+            f"                           ({len(inactive_adults)/len(adults_15_plus)*100:5.1f}% of adults 15+)"
+        )
+    ages = [person.age for person in all_people]
+    print("\nAge Distribution:")
+    print("=" * 60)
+    print(f"Average age: {sum(ages) / len(ages):.1f} years")
+    print(f"Youngest: {min(ages)} years")
+    print(f"Oldest: {max(ages)} years")
+    age_groups = {
+        "0-14 (Children)": len([age for age in ages if 0 <= age <= 14]),
+        "15-24 (Young adults)": len([age for age in ages if 15 <= age <= 24]),
+        "25-61 (Working adults)": len([age for age in ages if 25 <= age <= 61]),
+        "62+ (Pre-retirement/Seniors)": len([age for age in ages if age >= 62]),
+    }
+    for group, count in age_groups.items():
+        percentage = (count / len(ages)) * 100
+        print(f"{group:<20}: {count:4d} ({percentage:5.1f}%)")
+    religiosity_counts = Counter(family.religiosity for family in families)
+    print(f"\nReligiosity Distribution ({len(families)} families):")
+    print("=" * 60)
+    religiosity_names = {
+        Religiosity.VERY_RELIGIOUS: "Very Religious",
+        Religiosity.MODERATE_RELIGIOUS: "Moderate Religious Activity",
+        Religiosity.OCCASIONAL_RELIGIOUS: "Occasional Religious Activity",
+        Religiosity.NO_RELIGION: "No Religion",
+    }
+    for religiosity in Religiosity:
+        count = religiosity_counts[religiosity]
+        percentage = (count / len(families)) * 100
+        name = religiosity_names[religiosity]
+        print(f"{name:<35}: {count:4d} ({percentage:5.1f}%)")
+    expected_religiosity = {
+        Religiosity.VERY_RELIGIOUS: 5.0,
+        Religiosity.MODERATE_RELIGIOUS: 10.0,
+        Religiosity.OCCASIONAL_RELIGIOUS: 30.0,
+        Religiosity.NO_RELIGION: 55.0,
+    }
+    print("\nExpected vs Actual Religiosity Distribution:")
+    print("=" * 60)
+    print(f"{'Religiosity':<35} {'Expected':<10} {'Actual':<10} {'Difference':<12}")
+    print("-" * 60)
+    for religiosity in Religiosity:
+        expected = expected_religiosity[religiosity]
+        actual_count = religiosity_counts[religiosity]
+        actual = (actual_count / len(families)) * 100
+        difference = actual - expected
+        name = religiosity_names[religiosity]
+        print(f"{name:<35} {expected:<10.1f}% {actual:<10.1f}% {difference:+5.1f}%")
+
+
+if __name__ == "__main__":
+    # Accept file path argument
+    if len(sys.argv) > 1:
+        family_file = sys.argv[1]
+    else:
+        family_file = "data/families.json"
+    print(f"Using family file: {family_file}")
+    generator = FamilyGenerator()
+    if os.path.exists(family_file):
+        print(f"Loading families from {family_file}...")
+        families = generator.load_families(family_file)
+        print(f"Loaded {len(families)} families from file.")
+    else:
+        print("Generating 1000 families with realistic characteristics distribution...")
+        families = generator.generate_families(1000)
+        print(f"Successfully generated {len(families)} families.")
+        # Assign home, work, and school locations to each family
+        assigner = LocationAssigner(
+            "data/toulouse_educational_institutions.geojson",
+            "data/toulouse_hospitality_venues.geojson",
+        )
+        for family in families:
+            assigner.assign_locations_to_family(family)
+        print("✓ Locations assigned to all families.")
+        print(f"Saving families to {family_file}...")
+        generator.save_families(families, family_file)
+        print(f"✓ Families saved to {family_file}")
+    # Verify location assignment
+    missing_home = sum(1 for fam in families if not fam.home_position)
+    missing_work = sum(
+        1 for fam in families for p in fam.parents if not p.work_location
+    )
+    missing_school = sum(
+        1 for fam in families for c in fam.children if not c.school_location
+    )
+    print(
+        f"Location assignment check: {missing_home} families missing home, {missing_work} parents missing work, {missing_school} children missing school location."
+    )
+    if missing_home or missing_work or missing_school:
+        print(
+            "WARNING: Some locations were not assigned. Check assignment logic and input data."
+        )
+    print("\nLocation Assignment Summary:")
+    print(f"Families missing home: {missing_home}")
+    print(f"Parents missing work: {missing_work}")
+    print(f"Children missing school: {missing_school}")
+    print("(If any value above is nonzero, check assignment logic and input data)")
+    print("\nFirst 5 families:")
+    for i, family in enumerate(families[:5]):
+        print(f"{i+1}. {family}")
+        for j, parent in enumerate(family.parents):
+            print(f"   Parent {j+1}: {parent}")
+        for j, child in enumerate(family.children):
+            print(f"   Child {j+1}: {child}")
+    analyze_families(families)
+    unique_ids = set(family.family_id for family in families)
+    print(
+        f"\nVerification: {len(unique_ids)} unique family IDs out of {len(families)} families"
+    )
+    if len(unique_ids) == len(families):
+        print("✓ All families have unique identifiers")
+    else:
+        print("✗ Some families have duplicate identifiers")

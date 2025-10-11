@@ -1,11 +1,11 @@
 """Main program to generate family data."""
 
 from collections import Counter
-from models.family import Family
-from extractors.family_generator import FamilyGenerator
-from models.person import SocialCategory, Religiosity
-from location_assigner import LocationAssigner
-from models.location import Position
+from simulation.models.family import Family
+from simulation.family_generator import FamilyGenerator
+from simulation.models.person import SocialCategory, Religiosity
+from simulation.location_assigner import LocationAssigner
+from simulation.models.location import Position
 import sys
 import os
 
@@ -237,7 +237,7 @@ def main():
         # Assign home, work, and school locations to each family
         assigner = LocationAssigner(
             "data/toulouse_educational_institutions.geojson",
-            "data/toulouse_hospitality_venues.geojson",
+            "data/toulouse_work_places.geojson",
         )
         for family in families:
             assigner.assign_locations_to_family(family)
@@ -298,8 +298,30 @@ def main():
         event_file = sys.argv[2]
         print(f"Generating events and saving to {event_file}...")
         from extractors.event_generator import EventGenerator
+        from models.location_repository import LocationRepository
 
-        event_generator = EventGenerator(families)
+        # Load all relevant locations from GeoJSON files
+        data_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+        geojson_files = [
+            "toulouse_churches.geojson",
+            "toulouse_educational_institutions.geojson",
+            "toulouse_entertainment_venues.geojson",
+            "toulouse_hospitality_venues.geojson",
+            "toulouse_work_places.geojson",
+        ]
+        location_repo = LocationRepository()
+        for fname in geojson_files:
+            path = os.path.join(data_dir, fname)
+            if os.path.exists(path):
+                location_repo.add_locations_from_geojson(path)
+            else:
+                print(f"Warning: {path} not found.")
+
+        print(
+            f"Loaded {len(location_repo.get_all_locations())} locations into repository."
+        )
+
+        event_generator = EventGenerator(families, location_repository=location_repo)
         event_generator.generate_events()
         event_generator.save_events(event_file)
         print(f"✓ Events saved to {event_file}")

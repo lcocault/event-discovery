@@ -95,7 +95,36 @@ class EventGenerator:
         if not self.location_repository or not position:
             return None
         # Map string to LocationType
-        # (stray code removed)
+        try:
+            loc_type = getattr(LocationType, loc_type_str)
+        except AttributeError:
+            # Try lower-case match (for e.g. 'CHURCH' not in enum)
+            loc_type = None
+            for t in LocationType:
+                if t.name == loc_type_str or t.value.upper() == loc_type_str.upper():
+                    loc_type = t
+                    break
+        if not loc_type:
+            return None
+        # Find nearest location of this type
+        candidates = self.location_repository.get_locations_by_type(loc_type)
+        if not candidates:
+            print(f"[DEBUG] No candidates found for location type {loc_type_str}")
+            return None
+
+        # Find the closest by Euclidean distance
+        def dist(loc):
+            return (
+                (loc.position.latitude - position.latitude) ** 2
+                + (loc.position.longitude - position.longitude) ** 2
+            ) ** 0.5
+
+        nearest = min(candidates, key=dist)
+        min_dist = dist(nearest)
+        print(
+            f"[DEBUG] Nearest {loc_type_str} to ({position.latitude}, {position.longitude}) is '{getattr(nearest, 'name', None)}' at ({nearest.position.latitude}, {nearest.position.longitude}) with distance {min_dist:.4f} degrees (~{min_dist*111:.2f} km)"
+        )
+        return nearest
 
     def _generate_bar_events(self, person, family, day_in_year, day_in_week):
         # Students aged 18+ go to nearest bar after school (assume after 16:00)

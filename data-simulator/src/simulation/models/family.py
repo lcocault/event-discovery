@@ -2,11 +2,11 @@
 
 import uuid
 from typing import List, Optional, TYPE_CHECKING
-from models.person import SocialCategory
+from .person import SocialCategory
 
 if TYPE_CHECKING:
-    from person import Person, Religiosity
-    from location import Position
+    from .person import Person, Religiosity
+    from .location import Position
 
 
 class Family:

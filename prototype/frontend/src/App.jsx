@@ -46,7 +46,7 @@ function App() {
   const [loadingMeteo, setLoadingMeteo] = useState(false);
 
   const { isLoaded: isMapLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDtRfvSvWhZQEnANiA4QZCbOd7TUtM4HwE"
+  googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY
   });
 
   useEffect(() => {
@@ -77,7 +77,7 @@ function App() {
         const lon = position.coords.longitude;
         
         try {
-          const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=AIzaSyDtRfvSvWhZQEnANiA4QZCbOd7TUtM4HwE`;
+          const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lon}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`;
           const response = await fetch(geocodeUrl);
           const data = await response.json();
           
@@ -158,7 +158,7 @@ function App() {
   const handleLocationChange = async () => {
     if (tempLocation.trim()) {
       try {
-        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(tempLocation)}&key=AIzaSyDtRfvSvWhZQEnANiA4QZCbOd7TUtM4HwE`;
+  const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(tempLocation)}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`;
         const response = await fetch(geocodeUrl);
         const data = await response.json();
         

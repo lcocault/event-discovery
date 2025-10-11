@@ -7,7 +7,10 @@ from dataclasses import dataclass
 
 
 class LocationType(Enum):
+    # Religious venues
+    CHURCH = "church"  # Place of worship (amenity=place_of_worship)
     """Enumeration for different types of locations."""
+
     # Educational institutions
     SCHOOL = "school"  # Primary school (école primaire)
     COLLEGE = "college"  # Middle school (collège)
@@ -15,15 +18,15 @@ class LocationType(Enum):
     UNIVERSITY = "university"  # University
     KINDERGARTEN = "kindergarten"  # Kindergarten (maternelle)
     VOCATIONAL_SCHOOL = "vocational_school"  # Professional school
-    
+
     # Hospitality venues
     BAR = "bar"  # Bar
-    CAFE = "cafe"  # Café  
+    CAFE = "cafe"  # Café
     PUB = "pub"  # Pub
     RESTAURANT = "restaurant"  # Restaurant
     NIGHTCLUB = "nightclub"  # Night club
     BIERGARTEN = "biergarten"  # Beer garden
-    
+
     # Entertainment venues
     CINEMA = "cinema"  # Cinema, movie theater
     THEATRE = "theatre"  # Theater, theatrical venue
@@ -33,13 +36,17 @@ class LocationType(Enum):
     COMMUNITY_CENTRE = "community_centre"  # Community center
     EXHIBITION_CENTRE = "exhibition_centre"  # Exhibition center, museum
 
+    # Work places
+    WORK_PLACE = "work_place"  # Shop or office (work place)
+
 
 @dataclass
 class Position:
     """Represents a geographic position with latitude and longitude."""
+
     latitude: float
     longitude: float
-    
+
     def __str__(self) -> str:
         """Return string representation of the position."""
         return f"({self.latitude:.6f}, {self.longitude:.6f})"
@@ -48,10 +55,11 @@ class Position:
 @dataclass
 class OpeningHours:
     """Represents opening hours information."""
+
     raw_hours: Optional[str] = None  # Raw OSM opening_hours string
     is_always_open: bool = False
     notes: Optional[str] = None
-    
+
     def __str__(self) -> str:
         """Return string representation of opening hours."""
         if self.is_always_open:
@@ -64,7 +72,7 @@ class OpeningHours:
 
 class Location:
     """Represents a geographic location with position, type, and opening hours."""
-    
+
     def __init__(
         self,
         name: str,
@@ -73,11 +81,11 @@ class Location:
         opening_hours: Optional[OpeningHours] = None,
         osm_id: Optional[str] = None,
         additional_info: Optional[Dict[str, Any]] = None,
-        location_id: Optional[str] = None
+        location_id: Optional[str] = None,
     ):
         """
         Initialize a Location instance.
-        
+
         Args:
             name: Name of the location
             position: Geographic position (Position object)
@@ -94,32 +102,34 @@ class Location:
         self.opening_hours = opening_hours or OpeningHours()
         self.osm_id = osm_id
         self.additional_info = additional_info or {}
-    
+
     def __str__(self) -> str:
         """Return string representation of the location."""
         return f"Location(name='{self.name}', type={self.location_type.value}, position={self.position})"
-    
+
     def __repr__(self) -> str:
         """Return detailed string representation of the location."""
-        return (f"Location(id='{self.location_id}', name='{self.name}', "
-                f"type={self.location_type}, position={self.position}, "
-                f"hours={self.opening_hours}, osm_id={self.osm_id})")
-    
+        return (
+            f"Location(id='{self.location_id}', name='{self.name}', "
+            f"type={self.location_type}, position={self.position}, "
+            f"hours={self.opening_hours}, osm_id={self.osm_id})"
+        )
+
     def __eq__(self, other) -> bool:
         """Check equality based on location_id."""
         if not isinstance(other, Location):
             return False
         return self.location_id == other.location_id
-    
+
     def __hash__(self) -> int:
         """Return hash based on location_id."""
         return hash(self.location_id)
-    
+
     @property
     def coordinates(self) -> tuple[float, float]:
         """Return coordinates as (latitude, longitude) tuple."""
         return (self.position.latitude, self.position.longitude)
-    
+
     def distance_to(self, other_position: Position) -> float:
         """
         Calculate approximate distance to another position in kilometers.
@@ -128,4 +138,4 @@ class Location:
         lat_diff = self.position.latitude - other_position.latitude
         lon_diff = self.position.longitude - other_position.longitude
         # Rough conversion: 1 degree ≈ 111 km
-        return ((lat_diff ** 2 + lon_diff ** 2) ** 0.5) * 111
+        return ((lat_diff**2 + lon_diff**2) ** 0.5) * 111

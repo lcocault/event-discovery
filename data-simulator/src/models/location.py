@@ -58,6 +58,7 @@ class OpeningHours:
 
     raw_hours: Optional[str] = None  # Raw OSM opening_hours string
     is_always_open: bool = False
+    notes: Optional[str] = None
 
 
 @dataclass

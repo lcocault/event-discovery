@@ -171,7 +171,7 @@ class EventGenerator:
         Retirees/Inactive can go anytime, others go in the evening (19-22).
         """
         import random
-    from models.person import SocialCategory
+        from models.person import SocialCategory
 
         if not family or not family.social_category:
             return
@@ -195,18 +195,18 @@ class EventGenerator:
         if 0 <= time_slot <= 6:
             if person.family and person.family.home_position:
                 pos = person.family.home_position
-        # School hours: 8-16, Mon-Fri, children
+        # School hours: 8-16, Mon-Fri, children (age < 15)
         elif (
-            person.is_child
+            person.age < 15
             and person.school_location
             and day_in_week < 5
             and 8 <= time_slot <= 16
         ):
             if getattr(person.school_location, "position", None):
                 pos = person.school_location.position
-        # Work hours: 8-17, Mon-Fri, adults
+        # Work hours: 8-17, Mon-Fri, adults (age >= 15)
         elif (
-            person.is_adult
+            person.age >= 15
             and person.work_location
             and day_in_week < 5
             and 8 <= time_slot <= 17

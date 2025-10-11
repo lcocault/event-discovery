@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 from collections import defaultdict
 
-from .location import LocationType, Position, OpeningHours
+from .location import Location, LocationType, Position, OpeningHours
 
 
 class LocationRepository:
@@ -40,26 +40,26 @@ class LocationRepository:
                 oh_obj = OpeningHours(raw_hours=opening_hours)
             position = Position(latitude=lat, longitude=lon)
             location_id = props.get("id")
-            osm_id = props.get("osm_id")
             # Remove known fields from additional_info
             additional_info = {
                 k: v
                 for k, v in props.items()
                 if k not in {"id", "name", "location_type", "opening_hours", "osm_id"}
             }
+            if not isinstance(additional_info, dict):
+                additional_info = {}
             location = Location(
+                id=location_id,
                 name=name,
                 position=position,
                 location_type=location_type,
                 opening_hours=oh_obj,
-                osm_id=osm_id,
                 additional_info=additional_info,
-                location_id=location_id,
             )
             self.add_location(location)
 
     @staticmethod
-    def infer_location_type_from_tags(tags: dict) -> LocationType:
+    def infer_location_type_from_tags(tags: dict) -> Optional[LocationType]:
         # Map OSM tags to LocationType
         if tags.get("amenity") == "place_of_worship":
             return LocationType.CHURCH
@@ -81,10 +81,12 @@ class LocationRepository:
         Args:
             location: Location to add
         """
-        if location.location_id not in self._locations:
-            self._locations[location.location_id] = location
-            self._locations_by_type[location.location_type].add(location.location_id)
-            self._locations_by_name[location.name.lower()].add(location.location_id)
+        if location.id is not None and location.id not in self._locations:
+            self._locations[location.id] = location
+            if location.location_type is not None and location.id is not None:
+                self._locations_by_type[location.location_type].add(location.id)
+            if location.name and location.id is not None:
+                self._locations_by_name[location.name.lower()].add(location.id)
 
     def add_locations(self, locations: List[Location]) -> None:
         """
@@ -134,7 +136,11 @@ class LocationRepository:
             List of Location objects of the specified type
         """
         location_ids = self._locations_by_type.get(location_type, set())
-        return [self._locations[location_id] for location_id in location_ids]
+        return [
+            self._locations[location_id]
+            for location_id in location_ids
+            if location_id in self._locations
+        ]
 
     def search_locations_by_name(
         self, name: str, case_sensitive: bool = False
@@ -176,10 +182,29 @@ class LocationRepository:
         """
         matching_locations = []
 
+        from math import radians, sin, cos, sqrt, atan2
+
+        def haversine(lat1, lon1, lat2, lon2):
+            R = 6371.0
+            dlat = radians(lat2 - lat1)
+            dlon = radians(lon2 - lon1)
+            a = (
+                sin(dlat / 2) ** 2
+                + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
+            )
+            c = 2 * atan2(sqrt(a), sqrt(1 - a))
+            return R * c
+
         for location in self._locations.values():
-            distance = location.position.distance_to(center_lat, center_lon)
-            if distance <= radius_km:
-                matching_locations.append(location)
+            if location.position is not None:
+                distance = haversine(
+                    center_lat,
+                    center_lon,
+                    location.position.latitude,
+                    location.position.longitude,
+                )
+                if distance <= radius_km:
+                    matching_locations.append(location)
 
         return matching_locations
 
@@ -207,8 +232,11 @@ class LocationRepository:
         if not self._locations:
             return {"min_lat": 0.0, "max_lat": 0.0, "min_lon": 0.0, "max_lon": 0.0}
 
-        positions = [loc.position for loc in self._locations.values()]
-
+        positions = [
+            loc.position for loc in self._locations.values() if loc.position is not None
+        ]
+        if not positions:
+            return {"min_lat": 0.0, "max_lat": 0.0, "min_lon": 0.0, "max_lon": 0.0}
         return {
             "min_lat": min(pos.latitude for pos in positions),
             "max_lat": max(pos.latitude for pos in positions),
@@ -231,14 +259,16 @@ class LocationRepository:
                 "geometry": {
                     "type": "Point",
                     "coordinates": [
-                        location.position.longitude,
-                        location.position.latitude,
+                        location.position.longitude if location.position else None,
+                        location.position.latitude if location.position else None,
                     ],
                 },
                 "properties": {
-                    "id": location.location_id,
+                    "id": location.id,
                     "name": location.name,
-                    "location_type": location.location_type.value,
+                    "location_type": location.location_type.value
+                    if location.location_type
+                    else None,
                     "opening_hours": str(location.opening_hours)
                     if location.opening_hours
                     else None,
@@ -246,7 +276,7 @@ class LocationRepository:
             }
 
             # Add additional info if available
-            if hasattr(location, "additional_info") and location.additional_info:
+            if isinstance(location.additional_info, dict) and location.additional_info:
                 feature["properties"].update(location.additional_info)
 
             features.append(feature)

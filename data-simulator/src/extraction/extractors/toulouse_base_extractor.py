@@ -9,8 +9,8 @@ import logging
 import osmium
 from typing import Dict, List, Optional, Any, Set
 from abc import ABC, abstractmethod
-from simulation.models.location import Location, LocationType, Position, OpeningHours
-from simulation.models.location_repository import LocationRepository
+from models.location import Location, LocationType, Position, OpeningHours
+from models.location_repository import LocationRepository
 
 
 class ToulouseBaseExtractor(osmium.SimpleHandler, ABC):

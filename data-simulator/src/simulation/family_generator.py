@@ -327,8 +327,8 @@ class FamilyGenerator:
     def load_families(self, file_path: str) -> List[Family]:
         """Load families from a JSON file."""
         import json
-    from models.location import Position, Location, LocationType
-    from models.person import Gender, SocialCategory, Person, Religiosity
+        from models.location import Position, Location, LocationType
+        from models.person import Gender, SocialCategory, Person, Religiosity
 
         families = []
         with open(file_path, "r", encoding="utf-8") as f:
@@ -406,7 +406,7 @@ def analyze_families(families: list[Family]):
     total_people = 0
     all_people = []
     for family in families:
-        num_children = family.num_children
+        num_children = len(family.children)
         child_counts[num_children] = child_counts.get(num_children, 0) + 1
         total_people += family.total_members
         all_people.extend(family.parents)

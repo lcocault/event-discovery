@@ -2,7 +2,7 @@
 
 import logging
 from typing import Dict, Optional
-from simulation.models.location import LocationType
+from models.location import LocationType
 from .toulouse_base_extractor import ToulouseBaseExtractor
 
 

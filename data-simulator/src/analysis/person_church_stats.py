@@ -1,6 +1,11 @@
 import pandas as pd
 import shapely.wkb
 import json
+import logging
+
+# Set up logger
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
+logger = logging.getLogger("person_church_stats")
 
 person_id = "3344076f-0aa3-442c-b7f2-cb35e709f7b1"
 # Load events
@@ -31,9 +36,11 @@ person_events["latlon"] = person_events["geometry"].apply(geom_to_latlon)
 church_events = person_events[
     person_events["latlon"].apply(lambda x: x in church_coords)
 ]
-print(f"Total events for person: {len(person_events)}")
-print(f"Church events for person: {len(church_events)}")
+logger.info(f"Total events for person: {len(person_events)}")
+logger.info(f"Church events for person: {len(church_events)}")
 if not church_events.empty:
-    print("Sample church event coordinates:", church_events["latlon"].unique()[:5])
+    logger.info(
+        f"Sample church event coordinates: {church_events['latlon'].unique()[:5]}"
+    )
 else:
-    print("No church events found for this person.")
+    logger.info("No church events found for this person.")

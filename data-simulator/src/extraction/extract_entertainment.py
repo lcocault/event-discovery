@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Extract entertainment venues from Toulouse OSM data.
 
@@ -11,25 +10,23 @@ import logging
 import os
 import sys
 import time
-import os
 import json
 from pathlib import Path
-
-# Add src to Python path
-script_dir = Path(__file__).parent
-src_dir = script_dir / "src"
-sys.path.insert(0, str(src_dir))
-
 from extraction.extractors.toulouse_entertainment_extractor import (
     ToulouseEntertainmentExtractor,
 )
 
+# Add src to Python path
+script_dir = Path(__file__).parent
+src_dir = script_dir
+sys.path.insert(0, str(src_dir))
 
 os.makedirs(os.path.join(os.path.dirname(__file__), "data"), exist_ok=True)
 
 
 def main():
     """Main extraction function."""
+
     # Configure logging
     log_path = os.path.join(
         os.path.dirname(__file__), "data/entertainment_extraction.log"
@@ -84,14 +81,14 @@ def main():
     logger.info(f"Total entertainment venues found: {stats['total_venues']:,}")
 
     if stats["total_venues"] > 0:
-        logger.info("\\nVenue breakdown by type:")
+        logger.info("\nVenue breakdown by type:")
         for venue_type, count in sorted(stats["venue_breakdown"].items()):
             logger.info(f"  {venue_type.replace('_', ' ').title()}: {count:,}")
 
         # Get geographic bounds
         bounds = repository.get_bounds()
         if bounds:
-            logger.info(f"\\nGeographic bounds:")
+            logger.info("\nGeographic bounds:")
             logger.info(
                 f"  Latitude: {bounds['min_lat']:.6f} to {bounds['max_lat']:.6f}"
             )
@@ -101,7 +98,7 @@ def main():
 
         # Export to GeoJSON
         output_file = Path("data/toulouse_entertainment_venues.geojson")
-        logger.info(f"\\nExporting venues to: {output_file}")
+        logger.info(f"\nExporting venues to: {output_file}")
 
         try:
             geojson_data = repository.to_geojson()
@@ -113,7 +110,7 @@ def main():
             )
 
             # Show sample venues
-            logger.info("\\nSample entertainment venues:")
+            logger.info("\nSample entertainment venues:")
             sample_venues = repository.get_all_locations()[:10]
             for venue in sample_venues:
                 # Build address from additional_info
@@ -145,7 +142,7 @@ def main():
         logger.info("  - The entertainment venue mappings need adjustment")
         logger.info("  - The geographic bounds are incorrect")
 
-    logger.info("\\nExtraction completed successfully!")
+    logger.info("\nExtraction completed successfully!")
 
 
 if __name__ == "__main__":

@@ -26,25 +26,20 @@ from extraction.extractors.toulouse_educational_extractor import (
 
 os.makedirs(os.path.join(os.path.dirname(__file__), "data"), exist_ok=True)
 
+# Configure logging at the module level so logger is always available
+log_path = os.path.join(os.path.dirname(__file__), "data/educational_extraction.log")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(log_path),
+        logging.StreamHandler(),
+    ],
+)
+logger = logging.getLogger(__name__)
+
 
 def main():
-    """Main extraction function."""
-    # Configure logging
-    log_path = os.path.join(
-        os.path.dirname(__file__), "data/educational_extraction.log"
-    )
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s",
-        handlers=[
-            logging.FileHandler(log_path),
-            logging.StreamHandler(),
-        ],
-    )
-
-    logger = logging.getLogger(__name__)
-    logger.info("Starting Toulouse educational institutions extraction")
-
     # Path to OSM PBF file
     pbf_file = Path("data/midi-pyrenees-latest.osm.pbf")
     if not pbf_file.exists():
@@ -90,13 +85,13 @@ def main():
             venue_type = location.location_type.value
             venue_type_counts[venue_type] = venue_type_counts.get(venue_type, 0) + 1
 
-        print("\n" + "=" * 60)
-        print("TOULOUSE EDUCATIONAL INSTITUTIONS EXTRACTION RESULTS")
-        print("=" * 60)
-        print(f"Total institutions: {stats['total']}")
+        logger.info("\n" + "=" * 60)
+        logger.info("TOULOUSE EDUCATIONAL INSTITUTIONS EXTRACTION RESULTS")
+        logger.info("=" * 60)
+        logger.info(f"Total institutions: {stats['total']}")
 
         if venue_type_counts:
-            print("\nBreakdown by institution type:")
+            logger.info("\nBreakdown by institution type:")
             type_names = {
                 "school": "Schools",
                 "college": "Colleges",
@@ -106,11 +101,27 @@ def main():
 
             for venue_type, count in sorted(venue_type_counts.items()):
                 display_name = type_names.get(venue_type, venue_type.title())
-                print(f"  {display_name:<20}: {count:3d}")
+                logger.info(f"  {display_name:<20}: {count:3d}")
 
-        print(f"\n✓ GeoJSON exported to: {output_file}")
-        print("✓ Ready for mapping applications")
-        print("=" * 60)
+        logger.info(f"\n✓ GeoJSON exported to: {output_file}")
+        logger.info("✓ Ready for mapping applications")
+        logger.info("=" * 60)
+
+        return 0
+
+    except KeyboardInterrupt:
+        logger.info("Extraction interrupted by user")
+        return 1
+    except Exception as e:
+        logger.error(f"Error during extraction: {e}")
+        import traceback
+
+        traceback.print_exc()
+        return 1
+
+        logger.info(f"\n✓ GeoJSON exported to: {output_file}")
+        logger.info("✓ Ready for mapping applications")
+        logger.info("=" * 60)
 
         return 0
 

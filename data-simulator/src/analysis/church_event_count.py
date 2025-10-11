@@ -2,6 +2,11 @@ import pandas as pd
 import shapely.wkb
 import json
 import numpy as np
+import logging
+
+# Set up logger
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
+logger = logging.getLogger("church_event_count")
 
 # Load events
 events = pd.read_parquet("events.parquet")
@@ -33,4 +38,4 @@ def geom_to_latlon(g):
 
 events["latlon"] = events["geometry"].apply(geom_to_latlon)
 church_event_count = events["latlon"].apply(lambda x: x in church_coords).sum()
-print(f"Church events: {church_event_count}")
+logger.info(f"Church events: {church_event_count}")

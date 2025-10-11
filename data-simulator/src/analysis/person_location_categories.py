@@ -1,7 +1,12 @@
 import shapely.wkb
 import argparse
 import pandas as pd
+import logging
 from simulation.models.location_repository import LocationRepository
+
+# Set up logger
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
+logger = logging.getLogger("person_location_categories")
 
 
 def geom_to_latlon(g):
@@ -41,13 +46,13 @@ def main():
         coord_to_info[(lat, lon)] = (loc.name, loc.location_type.value)
 
     # Display all unique locations in the person's events
-    print("Locations in person events:")
+    logger.info("Locations in person events:")
     for coord in unique_coords:
         info = coord_to_info.get(coord, None)
         if info:
-            print(f"{coord}: {info[0]} [{info[1]}]")
+            logger.info(f"{coord}: {info[0]} [{info[1]}]")
         else:
-            print(f"{coord}: Home [Home]")
+            logger.info(f"{coord}: Home [Home]")
 
 
 if __name__ == "__main__":

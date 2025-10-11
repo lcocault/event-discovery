@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 import geopandas as gpd
 from shapely.geometry import Point
 from datetime import datetime, timedelta
@@ -9,6 +10,10 @@ from simulation.models.family import Family
 from simulation.models.person import Person
 from simulation.models.location import LocationType
 from simulation.models.event import Event
+
+# Set up logger
+logger = logging.getLogger("event_generator")
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
 
 class EventGenerator:
@@ -66,7 +71,7 @@ class EventGenerator:
         # Find nearest location of this type
         candidates = self.location_repository.get_locations_by_type(loc_type)
         if not candidates:
-            print(f"[DEBUG] No candidates found for location type {loc_type_str}")
+            logger.debug(f"No candidates found for location type {loc_type_str}")
             return None
 
         # Find the closest by Euclidean distance
@@ -78,8 +83,8 @@ class EventGenerator:
 
         nearest = min(candidates, key=dist)
         min_dist = dist(nearest)
-        print(
-            f"[DEBUG] Nearest {loc_type_str} to ({position.latitude}, {position.longitude}) is '{getattr(nearest, 'name', None)}' at ({nearest.position.latitude}, {nearest.position.longitude}) with distance {min_dist:.4f} degrees (~{min_dist*111:.2f} km)"
+        logger.debug(
+            f"Nearest {loc_type_str} to ({position.latitude}, {position.longitude}) is '{getattr(nearest, 'name', None)}' at ({nearest.position.latitude}, {nearest.position.longitude}) with distance {min_dist:.4f} degrees (~{min_dist*111:.2f} km)"
         )
         return nearest
 
@@ -292,9 +297,9 @@ if __name__ == "__main__":
         "toulouse_work_places.geojson",
     ]
     # Load families
-    print(f"Loading families from {family_file} ...")
+    logger.info(f"Loading families from {family_file} ...")
     families = load_families(family_file)
-    print(f"Loaded {len(families)} families.")
+    logger.info(f"Loaded {len(families)} families.")
     # Load locations
     location_repo = LocationRepository()
     for fname in geojson_files:
@@ -302,17 +307,17 @@ if __name__ == "__main__":
         if os.path.exists(path):
             location_repo.add_locations_from_geojson(path)
         else:
-            print(f"Warning: {path} not found.")
+            logger.warning(f"{path} not found.")
     # Debug: print number of locations loaded for each type
-    print("[DEBUG] Locations loaded by type:")
+    logger.debug("Locations loaded by type:")
     for loc_type in LocationType:
         count = len(location_repo.get_locations_by_type(loc_type))
-        print(f"  {loc_type.name}: {count}")
+    logger.debug(f"  {loc_type.name}: {count}")
     # Generate and save events
     generator = EventGenerator(families, location_repository=location_repo)
-    print("Generating events...")
+    logger.info("Generating events...")
     generator.generate_events()
-    print(f"Saving events to {event_file} ...")
+    logger.info(f"Saving events to {event_file} ...")
     generator.save_events(event_file)
 
     def _determine_location(self, person: Person, day_in_week: int, time_slot: int):
@@ -381,7 +386,7 @@ if __name__ == "__main__":
     # Load families
     families_path = "data/families.json"
     if not os.path.exists(families_path):
-        print(f"Family file not found: {families_path}")
+        logger.error(f"Family file not found: {families_path}")
         sys.exit(1)
     generator = FamilyGenerator()
     families = generator.load_families(families_path)
@@ -402,24 +407,24 @@ if __name__ == "__main__":
         if os.path.exists(path):
             location_repo.add_locations_from_geojson(path)
         else:
-            print(f"Warning: {path} not found.")
+            logger.warning(f"{path} not found.")
 
     # Debug: print number of locations loaded for each type
-    print("[DEBUG] Locations loaded by type:")
+    logger.debug("Locations loaded by type:")
     from simulation.models.location import LocationType
 
     for loc_type in LocationType:
         count = len(location_repo.get_locations_by_type(loc_type))
-        print(f"  {loc_type.name}: {count}")
+    logger.debug(f"  {loc_type.name}: {count}")
 
     # Generate and save events
     event_generator = EventGenerator(families, location_repository=location_repo)
-    print("Generating events...")
+    logger.info("Generating events...")
     event_generator.generate_events()
     output_path = "data/events.parquet"
-    print(f"Saving events to {output_path} ...")
+    logger.info(f"Saving events to {output_path} ...")
     event_generator.save_events(output_path)
-    print(f"✓ Events saved to {output_path}")
+    logger.info(f"✓ Events saved to {output_path}")
 
     """
     Generates daily activity events for each member of a family over one year.

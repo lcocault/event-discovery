@@ -67,23 +67,21 @@ def main():
 
         # Export to GeoJSON
         output_file = Path("data/toulouse_work_places.geojson")
-        geojson_data = repository.to_geojson()
 
+        geojson_data = repository.to_geojson()
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(geojson_data, f, indent=2, ensure_ascii=False)
 
         # Print summary
         stats = repository.get_statistics()
         logger.info(f"Successfully extracted {stats['total']} work places")
-
-        print("\n" + "=" * 60)
-        print("TOULOUSE WORK PLACES EXTRACTION RESULTS")
-        print("=" * 60)
-        print(f"Total work places: {stats['total']}")
-        print(f"\n✓ GeoJSON exported to: {output_file}")
-        print("✓ Ready for mapping applications")
-        print("=" * 60)
-
+        logger.info("\n" + "=" * 60)
+        logger.info("TOULOUSE WORK PLACES EXTRACTION RESULTS")
+        logger.info("=" * 60)
+        logger.info(f"Total work places: {stats['total']}")
+        logger.info(f"\n✓ GeoJSON exported to: {output_file}")
+        logger.info("✓ Ready for mapping applications")
+        logger.info("=" * 60)
         return 0
 
     except KeyboardInterrupt:

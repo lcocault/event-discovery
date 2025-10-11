@@ -2,7 +2,12 @@ import sys
 import json
 import pandas as pd
 import geopandas as gpd
+import logging
 from typing import List, Dict
+
+# Set up logger
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
+logger = logging.getLogger("draw_person_path")
 
 
 # Helper to load family data (assume JSON)
@@ -86,7 +91,9 @@ def build_kml(home, work_school, events):
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("Usage: draw_person_path.py <family_file> <events_file> <person_id>")
+        logger.error(
+            "Usage: draw_person_path.py <family_file> <events_file> <person_id>"
+        )
         sys.exit(1)
     family_file = sys.argv[1]
     events_file = sys.argv[2]
@@ -96,4 +103,4 @@ if __name__ == "__main__":
     home, work_school = get_person_locations(families, person_id)
     person_events = get_person_events(events_data, person_id)
     kml = build_kml(home, work_school, person_events)
-    print(kml)
+    logger.info(kml)

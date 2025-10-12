@@ -13,7 +13,7 @@ from models.location import Location, LocationType, Position, OpeningHours
 from models.location_repository import LocationRepository
 
 
-class ToulouseBaseExtractor(osmium.SimpleHandler, ABC):
+class BaseExtractor(osmium.SimpleHandler, ABC):
     """
     Base class for OSM extractors focused on Toulouse venues.
 
@@ -167,6 +167,7 @@ class ToulouseBaseExtractor(osmium.SimpleHandler, ABC):
 
         try:
             location = Location(
+                id=osm_id,  # Ensure id is set for repository storage
                 name=name or f"Unnamed {location_type.value}",
                 position=Position(latitude=lat, longitude=lon),
                 location_type=location_type,

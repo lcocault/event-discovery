@@ -208,19 +208,21 @@ class LocationRepository:
 
         return matching_locations
 
-    def get_statistics(self) -> Dict[str, int]:
+    def get_statistics(self) -> Dict[str, object]:
         """
         Get statistics about the locations in the repository.
 
         Returns:
-            Dictionary with statistics about location counts by type
+            Dictionary with total venues and breakdown by category
         """
-        stats = {"total": len(self._locations)}
-
+        total_venues = len(self._locations)
+        venue_breakdown = {}
         for location_type, location_ids in self._locations_by_type.items():
-            stats[location_type.value] = len(location_ids)
-
-        return stats
+            venue_breakdown[location_type.value] = len(location_ids)
+        return {
+            "total_venues": total_venues,
+            "venue_breakdown": venue_breakdown
+        }
 
     def get_bounds(self) -> Dict[str, float]:
         """

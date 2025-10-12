@@ -1,6 +1,31 @@
-# Data Simulator
 
 A modular Python project to extract OSM data, generate synthetic families, simulate events, and analyze results for urban studies and mobility research.
+
+## Installation
+
+1. Navigate to the `data-simulator` directory
+2. Install the package in development mode:
+
+   ```bash
+   pip install -e .
+   ```
+
+3. Download the OpenStreetMap data:
+
+   ```bash
+   mkdir -p data
+   wget https://download.geofabrik.de/europe/france/midi-pyrenees-latest.osm.pbf -O data/midi-pyrenees-latest.osm.pbf
+   ```
+
+## Workflow
+
+### 1. Extract OSM Data
+
+Run the unified extraction script to populate the `data/` directory with a single GeoJSON file containing all locations of interest:
+
+# Data Simulator
+
+A modular Python project to extract OSM data, generate synthetic families, simulate positions, and analyze results for urban studies and mobility research.
 
 ## Directory Structure
 
@@ -12,22 +37,21 @@ data-simulator/
 │   │   └── extractors/
 │   │       ├── base_extractor.py
 │   │       └── location_extractor.py
-│   ├── simulation/         # Family and event generation
-│   │   ├── main.py
-│   │   ├── event_generator.py
+│   ├── simulation/         # Family and position generation
+│   │   ├── position_generator.py
 │   │   ├── family_generator.py
 │   │   ├── location_assigner.py
 │   │   └── models/
 │   │       ├── family.py
 │   │       ├── person.py
-│   │       ├── event.py
+│   │       ├── position.py
 │   │       ├── location.py
 │   │       ├── location_repository.py
 │   │       └── __init__.py
-│   ├── analysis/           # Event analysis and stats tools
-│   │   ├── event_stats.py
+│   ├── analysis/           # Position analysis and stats tools
+│   │   ├── position_stats.py
 │   │   ├── person_church_stats.py
-│   │   ├── church_event_count.py
+│   │   ├── church_position_count.py
 │   │   ├── person_location_categories.py
 │   │   └── draw_person_path.py
 │   └── ...
@@ -66,37 +90,22 @@ python src/extraction/extract_locations.py
 - Each feature in the GeoJSON includes a `category` property that corresponds to the original kind of extractor (e.g., `church`, `entertainment`, `work`, `hospitality`, `educational`).
 - The extraction logic is now unified; obsolete scripts and extractors for individual categories have been removed.
 
-### 2. Generate Families and Events
+### 2. Generate Families and Positions
 
-Generate synthetic families, assign locations, and simulate daily events:
+Generate synthetic families, assign locations, and simulate daily positions:
 
 ```bash
-python src/simulation/main.py
+python src/simulation/family_generator.py
+python src/simulation/position_generator.py
 ```
 
-Outputs: `data/families.json`, `data/events.parquet`
+Outputs: `data/families.json`, `data/positions.parquet`
 
-### 3. Analyze Events
+### 3. Analyze Positions
 
-- **Global and Per-Person Event Stats:**
+You can analyze the generated positions with the following tools:
 
-  ```bash
-  python src/analysis/event_stats.py --events events.parquet [--person PERSON_ID]
-  ```
-
-- **Count Church Events for All:**
-
-  ```bash
-  python src/analysis/church_event_count.py
-  ```
-
-- **Count Church Events for a Person:**
-
-  ```bash
-  python src/analysis/person_church_stats.py
-  ```
-
-- **List All Event Locations for a Person:**
+- **List All Position Locations for a Person:**
 
   ```bash
   python src/analysis/person_location_categories.py --person PERSON_ID

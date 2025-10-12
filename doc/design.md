@@ -17,15 +17,15 @@ graph TD
     MTO_EXT --Current Weather--> POS_PROC
     POS_PROC --HistoryRecord--> HIS_REG[History Registry]
     HIS_REG <--History Record --> HIS_DB[(History)]
-    LOC_REG -- Location --> POS_EXT[Position Extractor]
-    Web --> POS_EXT
-    POS_EXT -- Position --> POS_DB[(Positions)]
-    POS_DB -- Position --> POS_REG[Position Registry]
+    LOC_REG -- Location --> EVT_EXT[Event Extractor]
+    Web --> EVT_EXT
+    EVT_EXT -- Event --> EVT_DB[(Events)]
+    EVT_DB -- Event --> EVT_REG[Event Registry]
     HIS_REG -- History Record --> REC_ENG[Recommendation Engine]
     MTO_EXT -- Forecast --> REC_ENG
-    POS_REG -- Position --> REC_ENG
+    EVT_REG -- Event --> REC_ENG
     SEARCH[User Search] -- Position --> REC_ENG
-    REC_ENG -- Position --> SEARCH
+    REC_ENG -- Event --> SEARCH
 ```
 
 ## Concepts

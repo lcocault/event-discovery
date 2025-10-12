@@ -1,7 +1,8 @@
 # Architecture
 
 ## Workflow
-The general workflow of the application is the following:
+The general workflow of the application is as follows:
+
 ```mermaid
 graph TD
     OSM --> LOC_EXT[Location Extractor]
@@ -30,25 +31,36 @@ graph TD
 
 ## Concepts
 
-### Location
-A **Location** represents a real-world place of interest, such as a venue, institution, or business. Locations are central to the application's data model and are used for event assignment and recommendations. Each location has:
-- A unique identifier (`id`)
-- A name (`name`)
-- A type (`location_type`), such as church, school, restaurant, work place, etc. (see `LocationType` enum)
-- A geographic position (`position`), with latitude and longitude
-- Optional opening hours and additional metadata (e.g., address, category, tags)
-
-Locations are extracted from OpenStreetMap (OSM) and stored in the unified GeoJSON file. The `category` property in the GeoJSON reflects the original kind of extractor (e.g., church, entertainment, work, hospitality, educational).
-
 ### Position
-A **Position** represents a geographic coordinate and its context in time and application usage. It is a central concept for both static locations and dynamic person movement. A position can be:
-- The fixed location of a place (venue, institution, etc.)
-- The dynamic position of a person at a specific time (i.e., a movement or activity)
-
-A position includes:
+A **Position** represents a geographic coordinate and its context in time and application usage. Since the system operates at the scale of a city, the precise location is not critical—positions are used mainly to represent the presence or movement of people within the city. A position includes:
 - `latitude`: The north-south coordinate
 - `longitude`: The east-west coordinate
-
-When used for tracking, a position is enriched with temporal and contextual attributes:
 - `person_id`: The unique identifier of the person (for movement)
 - `date`, `horaire`: Date and time (for user-facing positions)
+
+### Event
+An **Event** represents an occurrence or activity associated with a specific time. Events are central to the application's purpose of discovering and recommending relevant happenings to users. Each event has:
+- A unique identifier (`id`)
+- A descriptive name (`name`)
+- A start and end time (`start_time`, `end_time`)
+- A type or category (`event_type`), such as religious service, class, meal, meeting, etc.
+- Optional metadata, such as description, tags, or organizer information
+
+### Weather
+A **Weather** entity captures atmospheric conditions relevant to a specific time in the city. The system distinguishes between:
+- **Current Weather**: Real-time meteorological data for the city.
+- **Weather Forecast**: Predicted weather conditions for future time intervals.
+
+The weather parameters used are:
+- `clouds`: Cloud cover percentage or description
+- `rain`: Precipitation amount or probability
+- `temperature`: Air temperature in degrees Celsius
+
+Weather data is sourced from external providers and linked to events and user activities to enhance recommendations and user experience.
+
+### History Record
+A **History Record** aggregates information about a person's presence at a specific location and time, along with the corresponding weather conditions. It combines:
+- A **Position** (person, location, timestamp)
+- The **Weather** at that time and place
+
+This record enables the system to analyze user movement patterns and contextual factors, supporting personalized recommendations and insights.

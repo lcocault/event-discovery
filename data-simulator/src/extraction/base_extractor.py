@@ -14,6 +14,20 @@ from models.location_repository import LocationRepository
 
 
 class BaseExtractor(osmium.SimpleHandler, ABC):
+    def _get_category_from_location_type(self, location_type: LocationType) -> str:
+        """Map LocationType to original extractor category."""
+        if location_type == LocationType.CHURCH:
+            return "church"
+        elif location_type in [LocationType.SCHOOL, LocationType.COLLEGE, LocationType.LYCEE, LocationType.UNIVERSITY, LocationType.KINDERGARTEN, LocationType.VOCATIONAL_SCHOOL]:
+            return "educational"
+        elif location_type in [LocationType.BAR, LocationType.CAFE, LocationType.PUB, LocationType.RESTAURANT, LocationType.NIGHTCLUB, LocationType.BIERGARTEN]:
+            return "hospitality"
+        elif location_type in [LocationType.CINEMA, LocationType.THEATRE, LocationType.MUSIC_VENUE, LocationType.ARTS_CENTRE, LocationType.EVENTS_VENUE, LocationType.COMMUNITY_CENTRE, LocationType.EXHIBITION_CENTRE]:
+            return "entertainment"
+        elif location_type == LocationType.WORK_PLACE:
+            return "work"
+        else:
+            return "other"
     """
     Base class for OSM extractors focused on Toulouse venues.
 
@@ -164,6 +178,9 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
 
         if osm_id:
             additional_info["osm_id"] = osm_id
+
+        # Add original extractor category
+        additional_info["category"] = self._get_category_from_location_type(location_type)
 
         try:
             location = Location(

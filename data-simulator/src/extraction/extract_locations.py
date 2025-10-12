@@ -63,13 +63,28 @@ def main():
             logger.warning("No locations of interest found in Toulouse area")
             return 1
 
-        # Export to GeoJSON (with category in properties)
+        # Export to GeoJSON (with original extractor category in properties)
         output_file = Path("data/toulouse_locations_of_interest.geojson")
         geojson_data = repository.to_geojson()
-        # Add 'category' property to each feature
+        # Ensure 'category' property is present and correct in each feature
         for feature in geojson_data.get("features", []):
-            if "location_type" in feature["properties"]:
-                feature["properties"]["category"] = feature["properties"]["location_type"]
+            if "category" not in feature["properties"]:
+                # Fallback: if missing, use location_type mapping
+                lt = feature["properties"].get("location_type")
+                if lt:
+                    # Use same mapping as in BaseExtractor
+                    if lt == "church":
+                        feature["properties"]["category"] = "church"
+                    elif lt in ["school", "college", "lycee", "university", "kindergarten", "vocational_school"]:
+                        feature["properties"]["category"] = "educational"
+                    elif lt in ["bar", "cafe", "pub", "restaurant", "nightclub", "biergarten"]:
+                        feature["properties"]["category"] = "hospitality"
+                    elif lt in ["cinema", "theatre", "music_venue", "arts_centre", "events_venue", "community_centre", "exhibition_centre"]:
+                        feature["properties"]["category"] = "entertainment"
+                    elif lt == "work_place":
+                        feature["properties"]["category"] = "work"
+                    else:
+                        feature["properties"]["category"] = "other"
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(geojson_data, f, indent=2, ensure_ascii=False)
 

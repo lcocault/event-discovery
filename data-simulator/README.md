@@ -8,18 +8,10 @@ A modular Python project to extract OSM data, generate synthetic families, simul
 data-simulator/
 ├── src/
 │   ├── extraction/         # OSM data extraction scripts and extractors
-│   │   ├── extract_churches.py
-│   │   ├── extract_educational.py
-│   │   ├── extract_entertainment.py
-│   │   ├── extract_hospitality.py
-│   │   ├── extract_work_places.py
+│   │   ├── extract_locations.py   # Unified extraction script
 │   │   └── extractors/
-│   │       ├── toulouse_church_extractor.py
-│   │       ├── toulouse_educational_extractor.py
-│   │       ├── toulouse_entertainment_extractor.py
-│   │       ├── toulouse_hospitality_extractor.py
-│   │       ├── toulouse_work_places_extractor.py
-│   │       └── toulouse_base_extractor.py
+│   │       ├── base_extractor.py
+│   │       └── location_extractor.py
 │   ├── simulation/         # Family and event generation
 │   │   ├── main.py
 │   │   ├── event_generator.py
@@ -64,15 +56,15 @@ data-simulator/
 
 ### 1. Extract OSM Data
 
-Run all extraction scripts to populate the `data/` directory with GeoJSON files:
+Run the unified extraction script to populate the `data/` directory with a single GeoJSON file containing all locations of interest:
 
 ```bash
-python src/extraction/extract_educational.py
-python src/extraction/extract_entertainment.py
-python src/extraction/extract_hospitality.py
-python src/extraction/extract_churches.py
-python src/extraction/extract_work_places.py
+python src/extraction/extract_locations.py
 ```
+
+- The output file is: `data/toulouse_locations_of_interest.geojson`
+- Each feature in the GeoJSON includes a `category` property that corresponds to the original kind of extractor (e.g., `church`, `entertainment`, `work`, `hospitality`, `educational`).
+- The extraction logic is now unified; obsolete scripts and extractors for individual categories have been removed.
 
 ### 2. Generate Families and Events
 

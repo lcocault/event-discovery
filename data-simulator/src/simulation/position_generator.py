@@ -8,25 +8,26 @@ from typing import List
 from models.location_repository import LocationRepository
 from models.family import Family
 from models.person import Person
-from models.location import LocationType
-from models.event import Event
+
+from models.location import LocationType, Coordinates
+from models.position import Position
 
 # Set up logger
-logger = logging.getLogger("event_generator")
+logger = logging.getLogger("position_generator")
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 
 
-class EventGenerator:
+class PositionGenerator:
     """
-    Generates daily activity events for each member of a family over one year.
+    Generates daily activity positions for each member of a family over one year.
     """
 
     def __init__(self, families: List[Family], location_repository=None):
         self.families = families
-        self.events: list[Event] = []
+        self.positions = []  # type: ignore
         self.location_repository = location_repository
 
-    def generate_events(self):
+    def generate_positions(self):
         start_date = datetime(datetime.now().year, 1, 6)  # Jan 6, 2025 is a Monday
         for day_offset in range(31):
             date = start_date + timedelta(days=day_offset)
@@ -34,24 +35,24 @@ class EventGenerator:
             day_in_week = date.weekday()  # 0=Monday
             for family in self.families:
                 for person in family.parents + family.children:
-                    self._generate_base_events(person, day_in_year, day_in_week)
-                    self._generate_bar_events(person, family, day_in_year, day_in_week)
-                    self._generate_religious_events(
+                    self._generate_base_positions(person, day_in_year, day_in_week)
+                    self._generate_bar_positions(person, family, day_in_year, day_in_week)
+                    self._generate_religious_positions(
                         person, family, day_in_year, day_in_week
                     )
-                    self._generate_show_events(person, family, day_in_year, day_in_week)
+                    self._generate_show_positions(person, family, day_in_year, day_in_week)
 
-    def _generate_base_events(self, person, day_in_year, day_in_week):
+    def _generate_base_positions(self, person, day_in_year, day_in_week):
         for time_slot in range(24):
-            location = self._determine_location(person, day_in_week, time_slot)
-            event = Event(
+            coords = self._determine_location(person, day_in_week, time_slot)
+            pos = Position(
                 person_id=person.person_id,
                 day_in_year=day_in_year,
                 day_in_week=day_in_week,
                 time_slot=time_slot,
-                location=location,
+                location=coords,
             )
-            self.events.append(event)
+            self.positions.append(pos)
 
     def _find_nearest_location(self, position, loc_type_str):
         if not self.location_repository or not position:
@@ -88,7 +89,7 @@ class EventGenerator:
         )
         return nearest
 
-    def _generate_bar_events(self, person, family, day_in_year, day_in_week):
+    def _generate_bar_positions(self, person, family, day_in_year, day_in_week):
         # Students aged 18+ go to nearest bar after school (assume after 16:00)
         # If you want to use social_category for bar logic, use family.social_category
         if person.is_student and person.is_adult:
@@ -97,8 +98,8 @@ class EventGenerator:
                     person.school_location.position, "BAR"
                 )
                 if bar:
-                    self.events.append(
-                        Event(
+                    self.positions.append(
+                        Position(
                             person_id=person.person_id,
                             day_in_year=day_in_year,
                             day_in_week=day_in_week,
@@ -107,7 +108,7 @@ class EventGenerator:
                         )
                     )
 
-    def _generate_religious_events(self, person, family, day_in_year, day_in_week):
+    def _generate_religious_positions(self, person, family, day_in_year, day_in_week):
         import random
 
         religiosity = getattr(family, "religiosity", None)
@@ -117,8 +118,8 @@ class EventGenerator:
                 # Weekdays + Saturday at 19:00
                 if day_in_week < 6:
                     if church:
-                        self.events.append(
-                            Event(
+                        self.positions.append(
+                            Position(
                                 person_id=person.person_id,
                                 day_in_year=day_in_year,
                                 day_in_week=day_in_week,
@@ -129,8 +130,8 @@ class EventGenerator:
                 # Sunday at 11:00
                 if day_in_week == 6:
                     if church:
-                        self.events.append(
-                            Event(
+                        self.positions.append(
+                            Position(
                                 person_id=person.person_id,
                                 day_in_year=day_in_year,
                                 day_in_week=day_in_week,
@@ -141,8 +142,8 @@ class EventGenerator:
             elif religiosity.name == "MODERATE_RELIGIOUS":
                 # Every Sunday at 11:00
                 if day_in_week == 6 and church:
-                    self.events.append(
-                        Event(
+                    self.positions.append(
+                        Position(
                             person_id=person.person_id,
                             day_in_year=day_in_year,
                             day_in_week=day_in_week,
@@ -154,8 +155,8 @@ class EventGenerator:
                 # One Sunday out of 6
                 if day_in_week == 6 and church:
                     if random.randint(1, 6) == 1:
-                        self.events.append(
-                            Event(
+                        self.positions.append(
+                            Position(
                                 person_id=person.person_id,
                                 day_in_year=day_in_year,
                                 day_in_week=day_in_week,
@@ -164,7 +165,7 @@ class EventGenerator:
                             )
                         )
 
-    def _generate_show_events(self, person, family, day_in_year, day_in_week):
+    def _generate_show_positions(self, person, family, day_in_year, day_in_week):
         """
         Generate show (cinema, theatre, concert, etc.) events for a person based on their family's social category.
         Farmers = 0%, Artisans = 1%, Employees/Workers = 3%, Inactive/Retirees = 5%, Others = 10%.
@@ -189,12 +190,12 @@ class EventGenerator:
             prob = 0.10
 
     def _determine_location(self, person: Person, day_in_week: int, time_slot: int):
-        # Always return a Position object; fallback to home if needed
-        pos = None
+        # Always return a Coordinates object; fallback to home if needed
+        coords = None
         # Night hours: 0-6, always at home
         if 0 <= time_slot <= 6:
             if person.family and person.family.home_position:
-                pos = person.family.home_position
+                coords = person.family.home_position
         # School hours: 8-16, Mon-Fri, children (age < 15)
         elif (
             person.age < 15
@@ -203,7 +204,7 @@ class EventGenerator:
             and 8 <= time_slot <= 16
         ):
             if getattr(person.school_location, "position", None):
-                pos = person.school_location.position
+                coords = person.school_location.position
         # Work hours: 8-17, Mon-Fri, adults (age >= 15)
         elif (
             person.age >= 15
@@ -212,29 +213,29 @@ class EventGenerator:
             and 8 <= time_slot <= 17
         ):
             if getattr(person.work_location, "position", None):
-                pos = person.work_location.position
+                coords = person.work_location.position
         # Otherwise, home
         elif person.family and person.family.home_position:
-            pos = person.family.home_position
+            coords = person.family.home_position
         # Fallback: always use home position if nothing else
-        if pos is None and person.family and person.family.home_position:
-            pos = person.family.home_position
-        return pos
+        if coords is None and person.family and person.family.home_position:
+            coords = person.family.home_position
+        return coords
 
-    def save_events(self, path: str):
-        # Save events to GeoParquet using geopandas
+    def save_positions(self, path: str):
+        # Save positions to GeoParquet using geopandas
         records = []
         geometries = []
-        for event in self.events:
-            if event.location:
-                geometry = Point(event.location.longitude, event.location.latitude)
+        for position in self.positions:
+            if position.location:
+                geometry = Point(position.location.longitude, position.location.latitude)
             else:
                 geometry = None
             record = {
-                "person_id": event.person_id,
-                "day_in_year": event.day_in_year,
-                "day_in_week": event.day_in_week,
-                "time_slot": event.time_slot,
+                "person_id": position.person_id,
+                "day_in_year": position.day_in_year,
+                "day_in_week": position.day_in_week,
+                "time_slot": position.time_slot,
             }
             records.append(record)
             geometries.append(geometry)
@@ -270,9 +271,7 @@ def load_families(path):
         # Set home position
         pos = fam.get("home_position")
         if pos:
-            from models.location import Position
-
-            family.home_position = Position(
+            family.home_position = Coordinates(
                 latitude=pos["latitude"], longitude=pos["longitude"]
             )
         # Parents and children are not reconstructed in detail (not needed for event gen)
@@ -282,46 +281,9 @@ def load_families(path):
     return families
 
 
-# --- Script entry point ---
-if __name__ == "__main__":
-    # Paths
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
-    family_file = os.path.join(base_dir, "data/families.json")
-    event_file = os.path.join(base_dir, "data/events.parquet")
-    data_dir = os.path.join(base_dir, "data")
-    geojson_files = [
-        "toulouse_churches.geojson",
-        "toulouse_educational_institutions.geojson",
-        "toulouse_entertainment_venues.geojson",
-        "toulouse_hospitality_venues.geojson",
-        "toulouse_work_places.geojson",
-    ]
-    # Load families
-    logger.info(f"Loading families from {family_file} ...")
-    families = load_families(family_file)
-    logger.info(f"Loaded {len(families)} families.")
-    # Load locations
-    location_repo = LocationRepository()
-    for fname in geojson_files:
-        path = os.path.join(data_dir, fname)
-        if os.path.exists(path):
-            location_repo.add_locations_from_geojson(path)
-        else:
-            logger.warning(f"{path} not found.")
-    # Debug: print number of locations loaded for each type
-    logger.debug("Locations loaded by type:")
-    for loc_type in LocationType:
-        count = len(location_repo.get_locations_by_type(loc_type))
-    logger.debug(f"  {loc_type.name}: {count}")
-    # Generate and save events
-    generator = EventGenerator(families, location_repository=location_repo)
-    logger.info("Generating events...")
-    generator.generate_events()
-    logger.info(f"Saving events to {event_file} ...")
-    generator.save_events(event_file)
 
     def _determine_location(self, person: Person, day_in_week: int, time_slot: int):
-        # Always return a Position object; fallback to home if needed
+    # Always return a Coordinates object; fallback to home if needed
         pos = None
         # Night hours: 0-6, always at home
         if 0 <= time_slot <= 6:
@@ -353,20 +315,20 @@ if __name__ == "__main__":
             pos = person.family.home_position
         return pos
 
-    def save_events(self, path: str):
-        # Save events to GeoParquet using geopandas
+    def save_positions(self, path: str):
+        # Save positions to GeoParquet using geopandas
         records = []
-        for event in self.events:
-            if event.location:
-                geometry = Point(event.location.longitude, event.location.latitude)
+        for position in self.positions:
+            if position.location:
+                geometry = Point(position.location.longitude, position.location.latitude)
             else:
                 geometry = None
             records.append(
                 {
-                    "person_id": event.person_id,
-                    "day_in_year": event.day_in_year,
-                    "day_in_week": event.day_in_week,
-                    "time_slot": event.time_slot,
+                    "person_id": position.person_id,
+                    "day_in_year": position.day_in_year,
+                    "day_in_week": position.day_in_week,
+                    "time_slot": position.time_slot,
                     "geometry": geometry,
                 }
             )
@@ -393,21 +355,12 @@ if __name__ == "__main__":
 
     # Load locations
     data_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data")
-    geojson_files = [
-        "toulouse_churches.geojson",
-        "toulouse_educational_institutions.geojson",
-        "toulouse_entertainment_venues.geojson",
-        "toulouse_hospitality_venues.geojson",
-        "toulouse_work_places.geojson",
-    ]
+    unified_geojson = os.path.join(data_dir, "toulouse_locations_of_interest.geojson")
     location_repo = LocationRepository()
-
-    for fname in geojson_files:
-        path = os.path.join(data_dir, fname)
-        if os.path.exists(path):
-            location_repo.add_locations_from_geojson(path)
-        else:
-            logger.warning(f"{path} not found.")
+    if os.path.exists(unified_geojson):
+        location_repo.add_locations_from_geojson(unified_geojson)
+    else:
+        logger.warning(f"{unified_geojson} not found.")
 
     # Debug: print number of locations loaded for each type
     logger.debug("Locations loaded by type:")
@@ -417,24 +370,24 @@ if __name__ == "__main__":
         count = len(location_repo.get_locations_by_type(loc_type))
     logger.debug(f"  {loc_type.name}: {count}")
 
-    # Generate and save events
-    event_generator = EventGenerator(families, location_repository=location_repo)
-    logger.info("Generating events...")
-    event_generator.generate_events()
-    output_path = "data/events.parquet"
-    logger.info(f"Saving events to {output_path} ...")
-    event_generator.save_events(output_path)
-    logger.info(f"✓ Events saved to {output_path}")
+    # Generate and save positions
+    position_generator = PositionGenerator(families, location_repository=location_repo)
+    logger.info("Generating positions...")
+    position_generator.generate_positions()
+    output_path = "data/positions.parquet"
+    logger.info(f"Saving positions to {output_path} ...")
+    position_generator.save_positions(output_path)
+    logger.info(f"✓ Positions saved to {output_path}")
 
     """
-    Generates daily activity events for each member of a family over one year.
+    Generates daily activity positions for each member of a family over one year.
     """
 
     def __init__(self, families: List[Family], location_repository=None):
         self.families = families
         self.location_repository = location_repository
 
-    def generate_events(self):
+    def generate_positions(self):
         start_date = datetime(datetime.now().year, 1, 6)  # Jan 6, 2025 is a Monday
         for day_offset in range(31):
             date = start_date + timedelta(days=day_offset)
@@ -442,24 +395,24 @@ if __name__ == "__main__":
             day_in_week = date.weekday()  # 0=Monday
             for family in self.families:
                 for person in family.parents + family.children:
-                    self._generate_base_events(person, day_in_year, day_in_week)
-                    self._generate_bar_events(person, family, day_in_year, day_in_week)
-                    self._generate_religious_events(
+                    self._generate_base_positions(person, day_in_year, day_in_week)
+                    self._generate_bar_positions(person, family, day_in_year, day_in_week)
+                    self._generate_religious_positions(
                         person, family, day_in_year, day_in_week
                     )
-                    self._generate_show_events(person, family, day_in_year, day_in_week)
+                    self._generate_show_positions(person, family, day_in_year, day_in_week)
 
-    def _generate_base_events(self, person, day_in_year, day_in_week):
+    def _generate_base_positions(self, person, day_in_year, day_in_week):
         for time_slot in range(24):
             location = self._determine_location(person, day_in_week, time_slot)
-            event = Event(
+            position = Position(
                 person_id=person.person_id,
                 day_in_year=day_in_year,
                 day_in_week=day_in_week,
                 time_slot=time_slot,
                 location=location,
             )
-            self.events.append(event)
+            self.positions.append(position)
 
     def _find_nearest_location(self, position, loc_type_str):
         if not self.location_repository or not position:
@@ -496,7 +449,7 @@ if __name__ == "__main__":
         )
         return nearest
 
-    def _generate_bar_events(self, person, family, day_in_year, day_in_week):
+    def _generate_bar_positions(self, person, family, day_in_year, day_in_week):
         # Students aged 18+ go to nearest bar after school (assume after 16:00)
         # If you want to use social_category for bar logic, use family.social_category
         if person.is_student and person.is_adult:
@@ -505,8 +458,8 @@ if __name__ == "__main__":
                     person.school_location.position, "BAR"
                 )
                 if bar:
-                    self.events.append(
-                        Event(
+                    self.positions.append(
+                        Position(
                             person_id=person.person_id,
                             day_in_year=day_in_year,
                             day_in_week=day_in_week,
@@ -515,7 +468,7 @@ if __name__ == "__main__":
                         )
                     )
 
-    def _generate_religious_events(self, person, family, day_in_year, day_in_week):
+    def _generate_religious_positions(self, person, family, day_in_year, day_in_week):
         import random
 
         religiosity = getattr(family, "religiosity", None)
@@ -525,8 +478,8 @@ if __name__ == "__main__":
                 # Weekdays + Saturday at 19:00
                 if day_in_week < 6:
                     if church:
-                        self.events.append(
-                            Event(
+                        self.positions.append(
+                            Position(
                                 person_id=person.person_id,
                                 day_in_year=day_in_year,
                                 day_in_week=day_in_week,
@@ -537,8 +490,8 @@ if __name__ == "__main__":
                 # Sunday at 11:00
                 if day_in_week == 6:
                     if church:
-                        self.events.append(
-                            Event(
+                        self.positions.append(
+                            Position(
                                 person_id=person.person_id,
                                 day_in_year=day_in_year,
                                 day_in_week=day_in_week,
@@ -549,8 +502,8 @@ if __name__ == "__main__":
             elif religiosity.name == "MODERATE_RELIGIOUS":
                 # Every Sunday at 11:00
                 if day_in_week == 6 and church:
-                    self.events.append(
-                        Event(
+                    self.positions.append(
+                        Position(
                             person_id=person.person_id,
                             day_in_year=day_in_year,
                             day_in_week=day_in_week,
@@ -562,8 +515,8 @@ if __name__ == "__main__":
                 # One Sunday out of 6
                 if day_in_week == 6 and church:
                     if random.randint(1, 6) == 1:
-                        self.events.append(
-                            Event(
+                        self.positions.append(
+                            Position(
                                 person_id=person.person_id,
                                 day_in_year=day_in_year,
                                 day_in_week=day_in_week,
@@ -605,20 +558,20 @@ if __name__ == "__main__":
             pos = person.family.home_position
         return pos
 
-    def save_events(self, path: str):
-        # Save events to GeoParquet using geopandas
+    def save_positions(self, path: str):
+        # Save positions to GeoParquet using geopandas
         records = []
-        for event in self.events:
-            if event.location:
-                geometry = Point(event.location.longitude, event.location.latitude)
+        for position in self.positions:
+            if position.location:
+                geometry = Point(position.location.longitude, position.location.latitude)
             else:
                 geometry = None
             records.append(
                 {
-                    "person_id": event.person_id,
-                    "day_in_year": event.day_in_year,
-                    "day_in_week": event.day_in_week,
-                    "time_slot": event.time_slot,
+                    "person_id": position.person_id,
+                    "day_in_year": position.day_in_year,
+                    "day_in_week": position.day_in_week,
+                    "time_slot": position.time_slot,
                     "geometry": geometry,
                 }
             )

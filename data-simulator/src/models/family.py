@@ -6,7 +6,7 @@ from .person import SocialCategory
 
 if TYPE_CHECKING:
     from .person import Person, Religiosity
-    from .location import Position
+    from .location import Coordinates
 
 
 class Family:
@@ -17,7 +17,7 @@ class Family:
         religiosity: Optional["Religiosity"] = None,
         social_category: Optional["SocialCategory"] = None,
         family_id: Optional[str] = None,
-        home_position: Optional["Position"] = None,
+    home_position: Optional["Coordinates"] = None,
     ):
         """
         Initialize a Family instance.
@@ -26,7 +26,7 @@ class Family:
             religiosity: Religiosity level of the family (Religiosity enum)
             social_category: Social/professional category of the family (SocialCategory enum)
             family_id: Optional family identifier. If not provided, a UUID will be generated.
-            home_position: Geographic position of the family home (Position object)
+            home_position: Geographic position of the family home (Coordinates object)
         """
         self.family_id = family_id or str(uuid.uuid4())
         self.parents: List["Person"] = []

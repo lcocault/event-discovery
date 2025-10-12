@@ -41,14 +41,15 @@ class LocationType(Enum):
 
 
 @dataclass
-class Position:
-    """Represents a geographic position with latitude and longitude."""
+
+class Coordinates:
+    """Represents a geographic coordinate with latitude and longitude."""
 
     latitude: float
     longitude: float
 
     def __str__(self) -> str:
-        """Return string representation of the position."""
+        """Return string representation of the coordinates."""
         return f"({self.latitude:.6f}, {self.longitude:.6f})"
 
 
@@ -68,6 +69,6 @@ class Location:
     id: Optional[str] = None
     name: Optional[str] = None
     location_type: Optional[LocationType] = None
-    position: Optional[Position] = None
+    position: Optional[Coordinates] = None
     opening_hours: Optional[OpeningHours] = None
     additional_info: Dict[str, Any] = field(default_factory=dict)

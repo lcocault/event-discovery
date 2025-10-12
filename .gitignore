@@ -11,3 +11,4 @@ venv
 *.parquet
 *.pbf
 .env
+.venv

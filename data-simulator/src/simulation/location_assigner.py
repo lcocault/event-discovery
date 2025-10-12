@@ -15,7 +15,7 @@ from pathlib import Path
 
 from models.family import Family
 from models.person import Person
-from models.location import Location, LocationType, Position
+from models.location import Location, LocationType, Coordinates
 
 
 class LocationAssigner:
@@ -44,27 +44,42 @@ class LocationAssigner:
         "female": 0.70,  # 70% employment rate for women
     }
 
-    def __init__(self, educational_geojson_path: str, hospitality_geojson_path: str):
+    def __init__(self, unified_geojson_path: str):
         """
-        Initialize the location assigner.
+        Initialize the location assigner with a unified locations GeoJSON file.
 
         Args:
-            educational_geojson_path: Path to educational institutions GeoJSON
-            hospitality_geojson_path: Path to hospitality venues GeoJSON (for work locations)
+            unified_geojson_path: Path to unified locations GeoJSON
         """
-        self.educational_locations = self._load_educational_locations(
-            educational_geojson_path
-        )
-        self.work_locations = self._load_work_locations(hospitality_geojson_path)
+        self.all_locations = self._load_all_locations(unified_geojson_path)
+
+        # Filter and group locations by type
+        self.educational_locations = [
+            loc for loc in self.all_locations if loc.location_type in [
+                LocationType.KINDERGARTEN,
+                LocationType.SCHOOL,
+                LocationType.COLLEGE,
+                LocationType.LYCEE,
+                LocationType.UNIVERSITY
+            ]
+        ]
+        self.work_locations = [
+            loc for loc in self.all_locations if loc.location_type in [
+                LocationType.RESTAURANT,
+                LocationType.BAR,
+                LocationType.CAFE,
+                LocationType.WORK_PLACE
+            ]
+        ]
 
         # Group educational locations by type for efficient lookup
         self.schools_by_type: Dict[LocationType, List[Location]] = {}
         self._group_schools_by_type()
 
-    def _load_educational_locations(self, geojson_path: str) -> List[Location]:
-        """Load educational institutions from GeoJSON file."""
-        locations = []
 
+    def _load_all_locations(self, geojson_path: str) -> List[Location]:
+        """Load all locations from a unified GeoJSON file."""
+        locations = []
         with open(geojson_path, "r", encoding="utf-8") as f:
             geojson_data = json.load(f)
 
@@ -85,37 +100,7 @@ class LocationAssigner:
                     location_type = LocationType.UNIVERSITY
                 elif location_type_str == "kindergarten":
                     location_type = LocationType.KINDERGARTEN
-                else:
-                    continue  # Skip unknown types
-
-                location = Location(
-                    name=props.get("name", "Unnamed"),
-                    location_type=location_type,
-                    position=Position(coords[1], coords[0]),  # GeoJSON is [lon, lat]
-                    additional_info=props,
-                )
-                locations.append(location)
-
-            except (KeyError, ValueError):
-                continue  # Skip invalid entries
-
-        return locations
-
-    def _load_work_locations(self, geojson_path: str) -> List[Location]:
-        """Load potential work locations from hospitality venues GeoJSON file."""
-        locations = []
-
-        with open(geojson_path, "r", encoding="utf-8") as f:
-            geojson_data = json.load(f)
-
-        for feature in geojson_data["features"]:
-            coords = feature["geometry"]["coordinates"]
-            props = feature["properties"]
-
-            # Convert location type string to enum
-            location_type_str = props.get("location_type", "").lower()
-            try:
-                if location_type_str == "restaurant":
+                elif location_type_str == "restaurant":
                     location_type = LocationType.RESTAURANT
                 elif location_type_str == "bar":
                     location_type = LocationType.BAR
@@ -124,12 +109,12 @@ class LocationAssigner:
                 elif location_type_str == "work_place":
                     location_type = LocationType.WORK_PLACE
                 else:
-                    continue  # Only use valid work locations
+                    continue  # Skip unknown types
 
                 location = Location(
                     name=props.get("name", "Unnamed"),
                     location_type=location_type,
-                    position=Position(coords[1], coords[0]),  # GeoJSON is [lon, lat]
+                    position=Coordinates(coords[1], coords[0]),  # GeoJSON is [lon, lat]
                     additional_info=props,
                 )
                 locations.append(location)
@@ -139,6 +124,8 @@ class LocationAssigner:
 
         return locations
 
+    # _load_work_locations is now obsolete and removed.
+
     def _group_schools_by_type(self):
         """Group educational locations by type for efficient lookup."""
         for location in self.educational_locations:
@@ -146,7 +133,7 @@ class LocationAssigner:
                 self.schools_by_type[location.location_type] = []
             self.schools_by_type[location.location_type].append(location)
 
-    def generate_random_home_position(self) -> Position:
+    def generate_random_home_position(self) -> Coordinates:
         """Generate a random home position within Toulouse bounds."""
         lat = random.uniform(
             self.TOULOUSE_BOUNDS["min_lat"], self.TOULOUSE_BOUNDS["max_lat"]
@@ -154,10 +141,10 @@ class LocationAssigner:
         lon = random.uniform(
             self.TOULOUSE_BOUNDS["min_lon"], self.TOULOUSE_BOUNDS["max_lon"]
         )
-        return Position(lat, lon)
+        return Coordinates(lat, lon)
 
     @staticmethod
-    def calculate_distance(pos1: Position, pos2: Position) -> float:
+    def calculate_distance(pos1: Coordinates, pos2: Coordinates) -> float:
         """Calculate distance between two positions using Haversine formula."""
         # Convert to radians
         lat1, lon1 = math.radians(pos1.latitude), math.radians(pos1.longitude)
@@ -184,7 +171,7 @@ class LocationAssigner:
         return None
 
     def find_nearest_school(
-        self, home_position: Position, child_age: int
+    self, home_position: Coordinates, child_age: int
     ) -> Optional[Location]:
         """Find the nearest school appropriate for the child's age."""
         school_type = self.get_school_type_for_age(child_age)

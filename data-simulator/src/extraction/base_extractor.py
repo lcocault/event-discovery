@@ -9,7 +9,7 @@ import logging
 import osmium
 from typing import Dict, List, Optional, Any, Set
 from abc import ABC, abstractmethod
-from models.location import Location, LocationType, Position, OpeningHours
+from models.location import Location, LocationType, Coordinates, OpeningHours
 from models.location_repository import LocationRepository
 
 
@@ -186,7 +186,7 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
             location = Location(
                 id=osm_id,  # Ensure id is set for repository storage
                 name=name or f"Unnamed {location_type.value}",
-                position=Position(latitude=lat, longitude=lon),
+                position=Coordinates(latitude=lat, longitude=lon),
                 location_type=location_type,
                 opening_hours=opening_hours,
                 additional_info=additional_info,

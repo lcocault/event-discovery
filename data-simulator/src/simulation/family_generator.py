@@ -327,7 +327,7 @@ class FamilyGenerator:
     def load_families(self, file_path: str) -> List[Family]:
         """Load families from a JSON file."""
         import json
-        from models.location import Position, Location, LocationType
+        from models.location import Coordinates, Location, LocationType
         from models.person import Gender, SocialCategory, Person, Religiosity
 
         families = []
@@ -346,7 +346,7 @@ class FamilyGenerator:
             # Home position
             hp = fam_dict.get("home_position")
             if hp and hp["latitude"] is not None and hp["longitude"] is not None:
-                family.home_position = Position(hp["latitude"], hp["longitude"])
+                family.home_position = Coordinates(hp["latitude"], hp["longitude"])
             # Parents
             for p in fam_dict["parents"]:
                 gender = Gender(p["gender"])
@@ -367,7 +367,7 @@ class FamilyGenerator:
                     person.work_location = Location(
                         name=wl["name"],
                         location_type=LocationType(wl["type"]),
-                        position=Position(wl["latitude"], wl["longitude"]),
+                        position=Coordinates(wl["latitude"], wl["longitude"]),
                         additional_info={},
                     )
                 family.add_parent(person)
@@ -391,7 +391,7 @@ class FamilyGenerator:
                     person.school_location = Location(
                         name=sl["name"],
                         location_type=LocationType(sl["type"]),
-                        position=Position(sl["latitude"], sl["longitude"]),
+                        position=Coordinates(sl["latitude"], sl["longitude"]),
                         additional_info={},
                     )
                 family.add_child(person)
@@ -555,8 +555,7 @@ if __name__ == "__main__":
         print(f"Successfully generated {len(families)} families.")
         # Assign home, work, and school locations to each family
         assigner = LocationAssigner(
-            "data/toulouse_educational_institutions.geojson",
-            "data/toulouse_hospitality_venues.geojson",
+            "data/toulouse_locations_of_interest.geojson"
         )
         for family in families:
             assigner.assign_locations_to_family(family)

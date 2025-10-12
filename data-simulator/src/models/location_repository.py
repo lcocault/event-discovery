@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set, Union
 from collections import defaultdict
 
-from .location import Location, LocationType, Position, OpeningHours
+from .location import Location, LocationType, Coordinates, OpeningHours
 
 
 class LocationRepository:
@@ -38,7 +38,7 @@ class LocationRepository:
             oh_obj = None
             if opening_hours and opening_hours != "Hours not specified":
                 oh_obj = OpeningHours(raw_hours=opening_hours)
-            position = Position(latitude=lat, longitude=lon)
+            position = Coordinates(latitude=lat, longitude=lon)
             location_id = props.get("id")
             # Remove known fields from additional_info
             additional_info = {

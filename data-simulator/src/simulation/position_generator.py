@@ -5,11 +5,11 @@ import geopandas as gpd
 from shapely.geometry import Point
 from datetime import datetime, timedelta
 from typing import List
-from models.location_repository import LocationRepository
+from location import LocationRepository
 from models.family import Family
 from models.person import Person
 
-from models.location import LocationType, Coordinates
+from location import LocationType, Coordinates
 from models.position import Position
 
 # Set up logger
@@ -36,11 +36,15 @@ class PositionGenerator:
             for family in self.families:
                 for person in family.parents + family.children:
                     self._generate_base_positions(person, day_in_year, day_in_week)
-                    self._generate_bar_positions(person, family, day_in_year, day_in_week)
+                    self._generate_bar_positions(
+                        person, family, day_in_year, day_in_week
+                    )
                     self._generate_religious_positions(
                         person, family, day_in_year, day_in_week
                     )
-                    self._generate_show_positions(person, family, day_in_year, day_in_week)
+                    self._generate_show_positions(
+                        person, family, day_in_year, day_in_week
+                    )
 
     def _generate_base_positions(self, person, day_in_year, day_in_week):
         for time_slot in range(24):
@@ -228,7 +232,9 @@ class PositionGenerator:
         geometries = []
         for position in self.positions:
             if position.location:
-                geometry = Point(position.location.longitude, position.location.latitude)
+                geometry = Point(
+                    position.location.longitude, position.location.latitude
+                )
             else:
                 geometry = None
             record = {
@@ -280,10 +286,8 @@ def load_families(path):
         families.append(family)
     return families
 
-
-
     def _determine_location(self, person: Person, day_in_week: int, time_slot: int):
-    # Always return a Coordinates object; fallback to home if needed
+        # Always return a Coordinates object; fallback to home if needed
         pos = None
         # Night hours: 0-6, always at home
         if 0 <= time_slot <= 6:
@@ -320,7 +324,9 @@ def load_families(path):
         records = []
         for position in self.positions:
             if position.location:
-                geometry = Point(position.location.longitude, position.location.latitude)
+                geometry = Point(
+                    position.location.longitude, position.location.latitude
+                )
             else:
                 geometry = None
             records.append(
@@ -341,7 +347,7 @@ if __name__ == "__main__":
     import sys
     import os
     from models.family import Family
-    from models.location_repository import LocationRepository
+    from location import LocationRepository
     from models.person import Person
     from simulation.family_generator import FamilyGenerator
 
@@ -364,7 +370,7 @@ if __name__ == "__main__":
 
     # Debug: print number of locations loaded for each type
     logger.debug("Locations loaded by type:")
-    from models.location import LocationType
+    from location import LocationType
 
     for loc_type in LocationType:
         count = len(location_repo.get_locations_by_type(loc_type))
@@ -396,11 +402,15 @@ if __name__ == "__main__":
             for family in self.families:
                 for person in family.parents + family.children:
                     self._generate_base_positions(person, day_in_year, day_in_week)
-                    self._generate_bar_positions(person, family, day_in_year, day_in_week)
+                    self._generate_bar_positions(
+                        person, family, day_in_year, day_in_week
+                    )
                     self._generate_religious_positions(
                         person, family, day_in_year, day_in_week
                     )
-                    self._generate_show_positions(person, family, day_in_year, day_in_week)
+                    self._generate_show_positions(
+                        person, family, day_in_year, day_in_week
+                    )
 
     def _generate_base_positions(self, person, day_in_year, day_in_week):
         for time_slot in range(24):
@@ -563,7 +573,9 @@ if __name__ == "__main__":
         records = []
         for position in self.positions:
             if position.location:
-                geometry = Point(position.location.longitude, position.location.latitude)
+                geometry = Point(
+                    position.location.longitude, position.location.latitude
+                )
             else:
                 geometry = None
             records.append(

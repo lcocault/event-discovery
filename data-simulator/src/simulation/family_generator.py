@@ -327,7 +327,7 @@ class FamilyGenerator:
     def load_families(self, file_path: str) -> List[Family]:
         """Load families from a JSON file."""
         import json
-        from models.location import Coordinates, Location, LocationType
+        from location import Coordinates, Location, LocationType
         from models.person import Gender, SocialCategory, Person, Religiosity
 
         families = []
@@ -554,9 +554,7 @@ if __name__ == "__main__":
         families = generator.generate_families(1000)
         print(f"Successfully generated {len(families)} families.")
         # Assign home, work, and school locations to each family
-        assigner = LocationAssigner(
-            "data/toulouse_locations_of_interest.geojson"
-        )
+        assigner = LocationAssigner("../../location/data/toulouse_locations_of_interest.geojson")
         for family in families:
             assigner.assign_locations_to_family(family)
         print("✓ Locations assigned to all families.")

@@ -6,7 +6,7 @@ from .person import SocialCategory
 
 if TYPE_CHECKING:
     from .person import Person, Religiosity
-    from .location import Coordinates
+    from location import Coordinates
 
 
 class Family:
@@ -17,7 +17,7 @@ class Family:
         religiosity: Optional["Religiosity"] = None,
         social_category: Optional["SocialCategory"] = None,
         family_id: Optional[str] = None,
-    home_position: Optional["Coordinates"] = None,
+        home_position: Optional["Coordinates"] = None,
     ):
         """
         Initialize a Family instance.

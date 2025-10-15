@@ -15,7 +15,7 @@ from pathlib import Path
 
 from models.family import Family
 from models.person import Person
-from models.location import Location, LocationType, Coordinates
+from location import Location, LocationType, Coordinates
 
 
 class LocationAssigner:
@@ -55,27 +55,32 @@ class LocationAssigner:
 
         # Filter and group locations by type
         self.educational_locations = [
-            loc for loc in self.all_locations if loc.location_type in [
+            loc
+            for loc in self.all_locations
+            if loc.location_type
+            in [
                 LocationType.KINDERGARTEN,
                 LocationType.SCHOOL,
                 LocationType.COLLEGE,
                 LocationType.LYCEE,
-                LocationType.UNIVERSITY
+                LocationType.UNIVERSITY,
             ]
         ]
         self.work_locations = [
-            loc for loc in self.all_locations if loc.location_type in [
+            loc
+            for loc in self.all_locations
+            if loc.location_type
+            in [
                 LocationType.RESTAURANT,
                 LocationType.BAR,
                 LocationType.CAFE,
-                LocationType.WORK_PLACE
+                LocationType.WORK_PLACE,
             ]
         ]
 
         # Group educational locations by type for efficient lookup
         self.schools_by_type: Dict[LocationType, List[Location]] = {}
         self._group_schools_by_type()
-
 
     def _load_all_locations(self, geojson_path: str) -> List[Location]:
         """Load all locations from a unified GeoJSON file."""
@@ -171,7 +176,7 @@ class LocationAssigner:
         return None
 
     def find_nearest_school(
-    self, home_position: Coordinates, child_age: int
+        self, home_position: Coordinates, child_age: int
     ) -> Optional[Location]:
         """Find the nearest school appropriate for the child's age."""
         school_type = self.get_school_type_for_age(child_age)

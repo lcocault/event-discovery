@@ -16,7 +16,7 @@ from pathlib import Path
 
 src_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(src_dir))
-from extraction.location_extractor import LocationExtractor
+from .location_extractor import LocationExtractor
 
 os.makedirs(os.path.join(os.path.dirname(__file__), "data"), exist_ok=True)
 
@@ -24,7 +24,9 @@ os.makedirs(os.path.join(os.path.dirname(__file__), "data"), exist_ok=True)
 def main():
     """Main extraction function for all locations of interest."""
     # Configure logging
-    log_path = os.path.join(os.path.dirname(__file__), "../../data/locations_extraction.log")
+    log_path = os.path.join(
+        os.path.dirname(__file__), "../../data/locations_extraction.log"
+    )
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s",
@@ -37,7 +39,7 @@ def main():
     logger.info("Starting unified extraction of locations of interest")
 
     # Path to OSM PBF file
-    pbf_file = Path("data/midi-pyrenees-latest.osm.pbf")
+    pbf_file = Path("../data/midi-pyrenees-latest.osm.pbf")
     if not pbf_file.exists():
         logger.error(f"PBF file not found: {pbf_file}")
         logger.info(
@@ -64,7 +66,7 @@ def main():
             return 1
 
         # Export to GeoJSON (with original extractor category in properties)
-        output_file = Path("data/toulouse_locations_of_interest.geojson")
+        output_file = Path("../data/toulouse_locations_of_interest.geojson")
         geojson_data = repository.to_geojson()
         # Ensure 'category' property is present and correct in each feature
         for feature in geojson_data.get("features", []):
@@ -75,11 +77,33 @@ def main():
                     # Use same mapping as in BaseExtractor
                     if lt == "church":
                         feature["properties"]["category"] = "church"
-                    elif lt in ["school", "college", "lycee", "university", "kindergarten", "vocational_school"]:
+                    elif lt in [
+                        "school",
+                        "college",
+                        "lycee",
+                        "university",
+                        "kindergarten",
+                        "vocational_school",
+                    ]:
                         feature["properties"]["category"] = "educational"
-                    elif lt in ["bar", "cafe", "pub", "restaurant", "nightclub", "biergarten"]:
+                    elif lt in [
+                        "bar",
+                        "cafe",
+                        "pub",
+                        "restaurant",
+                        "nightclub",
+                        "biergarten",
+                    ]:
                         feature["properties"]["category"] = "hospitality"
-                    elif lt in ["cinema", "theatre", "music_venue", "arts_centre", "events_venue", "community_centre", "exhibition_centre"]:
+                    elif lt in [
+                        "cinema",
+                        "theatre",
+                        "music_venue",
+                        "arts_centre",
+                        "events_venue",
+                        "community_centre",
+                        "exhibition_centre",
+                    ]:
                         feature["properties"]["category"] = "entertainment"
                     elif lt == "work_place":
                         feature["properties"]["category"] = "work"
@@ -90,7 +114,9 @@ def main():
 
         # Print summary
         stats = repository.get_statistics()
-        logger.info(f"Successfully extracted {stats['total_venues']} locations of interest")
+        logger.info(
+            f"Successfully extracted {stats['total_venues']} locations of interest"
+        )
         logger.info("\nBreakdown by category:")
         for category, count in sorted(stats["venue_breakdown"].items()):
             logger.info(f"  {category:<20}: {count:3d}")
@@ -106,6 +132,7 @@ def main():
     except Exception as e:
         logger.error(f"Error during extraction: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 

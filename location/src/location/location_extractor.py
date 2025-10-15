@@ -2,8 +2,8 @@
 
 import logging
 from typing import Dict, Optional
-from models.location import LocationType
-from extraction.base_extractor import BaseExtractor
+from .location import LocationType
+from .base_extractor import BaseExtractor
 
 
 class LocationExtractor(BaseExtractor):
@@ -105,7 +105,9 @@ class LocationExtractor(BaseExtractor):
             "maternelle": LocationType.KINDERGARTEN,
         }
 
-    def _get_location_type_from_tags(self, tags: Dict[str, str]) -> Optional[LocationType]:
+    def _get_location_type_from_tags(
+        self, tags: Dict[str, str]
+    ) -> Optional[LocationType]:
         # Amenity
         if "amenity" in tags and tags["amenity"] in self.amenity_mappings:
             return self.amenity_mappings[tags["amenity"]]
@@ -140,8 +142,17 @@ class LocationExtractor(BaseExtractor):
             or ("building" in tags and tags["building"] in self.building_mappings)
             or ("leisure" in tags and tags["leisure"] in self.leisure_mappings)
             or ("tourism" in tags and tags["tourism"] in self.tourism_mappings)
-            or ("cuisine" in tags and tags["cuisine"] in self.additional_mappings["cuisine"])
+            or (
+                "cuisine" in tags
+                and tags["cuisine"] in self.additional_mappings["cuisine"]
+            )
             or ("shop" in tags)
             or ("office" in tags)
-            or (self._extract_name(tags) and any(keyword in self._extract_name(tags).lower() for keyword in self.name_keywords))
+            or (
+                self._extract_name(tags)
+                and any(
+                    keyword in self._extract_name(tags).lower()
+                    for keyword in self.name_keywords
+                )
+            )
         )

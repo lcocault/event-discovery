@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Extract all locations of interest from Toulouse OSM data in a single pass.
+Extract all locations of interest from OSM data in a single pass.
 
 This script processes the OSM PBF file to extract churches, educational institutions,
 hospitality venues, entertainment venues, and work places, then exports them to GeoJSON format.
@@ -39,7 +39,7 @@ def main():
     logger.info("Starting unified extraction of locations of interest")
 
     # Path to OSM PBF file
-    pbf_file = Path("../data/midi-pyrenees-latest.osm.pbf")
+    pbf_file = Path("data/midi-pyrenees-latest.osm.pbf")
     if not pbf_file.exists():
         logger.error(f"PBF file not found: {pbf_file}")
         logger.info(
@@ -62,11 +62,11 @@ def main():
         logger.info(f"Processing completed in {processing_time:.2f} seconds")
 
         if not repository.get_all_locations():
-            logger.warning("No locations of interest found in Toulouse area")
+            logger.warning("No locations of interest found in area")
             return 1
 
         # Export to GeoJSON (with original extractor category in properties)
-        output_file = Path("../data/toulouse_locations_of_interest.geojson")
+        output_file = Path("data/locations_of_interest.geojson")
         geojson_data = repository.to_geojson()
         # Ensure 'category' property is present and correct in each feature
         for feature in geojson_data.get("features", []):

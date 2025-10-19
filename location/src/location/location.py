@@ -66,9 +66,9 @@ class OpeningHours:
 class Location:
     """Represents a real-world location (venue, institution, etc)."""
 
-    id: Optional[str] = None
-    name: Optional[str] = None
-    location_type: Optional[LocationType] = None
-    position: Optional[Coordinates] = None
+    id: str
+    name: str
+    location_type: LocationType
+    position: Coordinates
     opening_hours: Optional[OpeningHours] = None
     additional_info: Dict[str, Any] = field(default_factory=dict)

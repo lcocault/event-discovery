@@ -34,7 +34,7 @@ cd src
 ../../.venv/bin/python -m location.extract_locations
 ```
 
-- The output file is: `../data/toulouse_locations_of_interest.geojson` (relative to `src`)
+- The output file is: `../data/locations_of_interest.geojson` (relative to `src`)
 - This file is used as input for the family and event generation in the `data-simulator` project.
 - Each feature in the GeoJSON includes a `category` property that corresponds to the original kind of extractor (e.g., `church`, `entertainment`, `work`, `hospitality`, `educational`).
 - The extraction logic is now unified and maintained in the standalone `location` package.

@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: Location API
+  version: 1.0.0
+  description: API to retrieve information about locations.
+paths:
+  /locations/{location_id}:
+    get:
+      summary: Get location by ID
+      description: Retrieve detailed information about a location using its unique identifier.
+      parameters:
+        - name: location_id
+          in: path
+          required: true
+          description: Unique identifier of the location
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with location information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '404':
+          description: Location not found
+components:
+  schemas:
+    Location:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the location
+        name:
+          type: string
+          description: Name of the location
+        latitude:
+          type: number
+          format: float
+          description: Latitude of the location
+        longitude:
+          type: number
+          format: float
+          description: Longitude of the location
+      required:
+        - id
+        - name
+        - latitude
+        - longitude

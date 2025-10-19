@@ -1,12 +1,13 @@
 """
-Base extractor class for Toulouse OSM data processing.
+Base extractor class for OSM data processing.
 
-This module provides a common base class for all Toulouse-specific extractors,
+This module provides a common base class for all extractors,
 eliminating code duplication and providing consistent functionality.
 """
 
 import logging
 import osmium
+import uuid
 from typing import Dict, List, Optional, Any, Set
 from abc import ABC, abstractmethod
 from .location import Location, LocationType, Coordinates, OpeningHours
@@ -52,7 +53,7 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
             return "other"
 
     """
-    Base class for OSM extractors focused on Toulouse venues.
+    Base class for OSM extractors focused on specific areas.
 
     Provides common functionality for geographic filtering, statistics tracking,
     location creation, and OSM data processing.
@@ -69,7 +70,7 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
         self.extractor_type = extractor_type
         self.repository = LocationRepository()
 
-        # Toulouse approximate bounds (for performance filtering)
+        # Area bounds (for performance filtering)
         self.min_lat = 43.55
         self.max_lat = 43.65
         self.min_lon = 1.35
@@ -89,8 +90,8 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
 
         logging.info(f"Initialized {self.__class__.__name__}")
 
-    def _is_in_toulouse(self, lat: float, lon: float) -> bool:
-        """Check if coordinates are within Toulouse bounds."""
+    def _is_in_area_of_interest(self, lat: float, lon: float) -> bool:
+        """Check if coordinates are within area bounds."""
         return (
             self.min_lat <= lat <= self.max_lat and self.min_lon <= lon <= self.max_lon
         )
@@ -199,6 +200,7 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
         opening_hours = self._extract_opening_hours(tags)
         additional_info = self._extract_additional_info(tags)
 
+        # Always store the OSM identifier in additional_info if present
         if osm_id:
             additional_info["osm_id"] = osm_id
 
@@ -209,7 +211,7 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
 
         try:
             location = Location(
-                id=osm_id,  # Ensure id is set for repository storage
+                id=str(uuid.uuid4()),  # Always use a generated UUID
                 name=name or f"Unnamed {location_type.value}",
                 position=Coordinates(latitude=lat, longitude=lon),
                 location_type=location_type,
@@ -260,8 +262,8 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
             self.node_locations = {}
         self.node_locations[n.id] = (lat, lon)
 
-        # Filter by Toulouse bounds for performance
-        if not self._is_in_toulouse(lat, lon):
+        # Filter by area bounds for performance
+        if not self._is_in_area_of_interest(lat, lon):
             return
 
         # Convert tags to dictionary
@@ -296,8 +298,8 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
                 break
         if lat is None or lon is None:
             return
-        # Filter by Toulouse bounds for performance
-        if not self._is_in_toulouse(lat, lon):
+        # Filter by area bounds for performance
+        if not self._is_in_area_of_interest(lat, lon):
             return
         tags = {tag.k: tag.v for tag in w.tags}
         # Try to create location

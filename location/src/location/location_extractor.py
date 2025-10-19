@@ -1,4 +1,4 @@
-"""Extractor for all locations of interest in Toulouse from OSM PBF data."""
+"""Extractor for all locations of interest from OSM PBF data."""
 
 import logging
 from typing import Dict, Optional
@@ -7,7 +7,7 @@ from .base_extractor import BaseExtractor
 
 
 class LocationExtractor(BaseExtractor):
-    """OSM handler for extracting all locations of interest in Toulouse."""
+    """OSM handler for extracting all locations of interest."""
 
     def __init__(self):
         super().__init__("unified")

@@ -2,9 +2,9 @@
 
 set -e
 
-echo "#######################################"
-echo "### Build API for Location Services ###"
-echo "#######################################"
+echo "####################################"
+echo "### Build API for Event Services ###"
+echo "####################################"
 
 # Context
 export NVM_VERSION=v0.40.2
@@ -15,9 +15,9 @@ export TARGET_DIR="${SCRIPT_DIR}/specifications"
 # Ensure fastapi-codegen is installed
 uv pip install fastapi-code-generator
 
-# Generate the FastAPI code for Location API
-export DOMAIN="location"
-fastapi-codegen --input ${REPO_DIR}/src/api/specifications/location.yaml \
+# Generate the FastAPI code for Event API
+export DOMAIN="event"
+fastapi-codegen --input ${REPO_DIR}/src/api/specifications/event.yaml \
     --output ${REPO_DIR}/src/api/stubs/${DOMAIN} \
     --generate-routers \
     --output-model-type pydantic_v2.BaseModel \

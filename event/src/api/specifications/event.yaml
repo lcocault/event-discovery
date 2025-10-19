@@ -1,0 +1,58 @@
+openapi: 3.0.3
+info:
+  title: Event API
+  version: 1.0.0
+  description: API to retrieve information about events.
+paths:
+  /events/{event_id}:
+    get:
+      summary: Get event by ID
+      description: Retrieve detailed information about an event using its unique identifier.
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          description: Unique identifier of the event
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response with event information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+components:
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the event
+        name:
+          type: string
+          description: Name of the event
+        latitude:
+          type: number
+          format: float
+          description: Latitude of the event location
+        longitude:
+          type: number
+          format: float
+          description: Longitude of the event location
+        start_time:
+          type: string
+          format: date-time
+          description: Start time of the event
+        end_time:
+          type: string
+          format: date-time
+          description: End time of the event
+      required:
+        - id
+        - name
+        - latitude
+        - longitude

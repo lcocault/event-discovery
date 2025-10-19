@@ -1,0 +1,66 @@
+from __future__ import annotations
+
+from fastapi import FastAPI, Request
+
+{{imports}}
+import logging
+
+from event.event_dispatcher import EventDispatcher
+
+dispatcher: EventDispatcher
+logger = logging.getLogger(__name__)
+
+def initialize_event_dispatcher(new_dispatcher: EventDispatcher) -> None:
+    """Initialize the dispatcher."""
+    global dispatcher  # noqa: PLW0603
+    dispatcher = new_dispatcher
+
+event = FastAPI(
+    title="{{ info.title }}",
+    version="{{ info.version }}",
+    description="{{ info.description }}",
+)
+
+{% macro extract_argument_names(arguments) %}
+
+    {# Remove the portions between brackets and parentheses #}
+    {% set cleaned_characters = [] %}
+    {% set keep = [] %}
+    {% set _ = keep.append(True) %}
+    {% for char in arguments %}
+        {% if char == '[' or char == '(' %}
+            {% set _ = keep.append(False) %}
+        {% elif char == ']' or char == ')' %}
+            {% set _ = keep.append(True) %}
+        {% elif keep[-1] %}
+            {% set _ = cleaned_characters.append(char) %}
+        {% endif %}
+    {% endfor %}
+    {% set cleaned_arguments = cleaned_characters | join('') %}
+
+    {# Separate the arguments using "," and take the part before ":" #}
+    {% set argument_names = [] %}
+    {% set args = cleaned_arguments.split(',') %}    
+    {% for arg in args %}
+        {% set name = arg.strip().split(':')[0].strip() %}
+        {% if name not in argument_names %}
+            {%- set _ = argument_names.append(name) %}
+        {% endif %}
+    {% endfor %}
+    {{ argument_names | join(', ')}}
+
+{% endmacro %}
+
+{% for operation in operations %}
+{% set arguments = operation.snake_case_arguments %}
+@event.{{operation.type}}('{{operation.path}}', response_model={{operation.response}},
+    status_code={{ operation.responses.keys() | list | first }}
+)
+async def {{operation.function_name}}(request: Request, {{operation.snake_case_arguments}}) -> {{operation.response}}:
+    {%- if operation.summary %}
+    """{{ operation.summary }}."""
+    {%- endif %}
+    logger.info(f'[{{operation.type}}] {{operation.path}} {await request.body()}')
+    return await dispatcher.{{ operation.function_name }}({{ extract_argument_names(arguments) }})
+
+{% endfor %}

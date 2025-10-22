@@ -1,6 +1,7 @@
 __pycache__
 build
 node_modules
+stubs
 venv
 *.db
 *.egg-info

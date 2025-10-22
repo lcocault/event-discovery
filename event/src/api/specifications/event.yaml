@@ -24,6 +24,43 @@ paths:
                 $ref: '#/components/schemas/Event'
         '404':
           description: Event not found
+  /events/around:
+    get:
+      summary: Get events around a position and time
+      description: Retrieve events near a given latitude, longitude, and time.
+      parameters:
+        - name: latitude
+          in: query
+          required: true
+          description: Latitude of the position
+          schema:
+            type: number
+            format: float
+        - name: longitude
+          in: query
+          required: true
+          description: Longitude of the position
+          schema:
+            type: number
+            format: float
+        - name: time
+          in: query
+          required: true
+          description: ISO 8601 timestamp for the search
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: List of events near the position and time
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+        '400':
+          description: Invalid parameters
 components:
   schemas:
     Event:

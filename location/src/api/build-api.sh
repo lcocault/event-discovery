@@ -15,8 +15,11 @@ export TARGET_DIR="${SCRIPT_DIR}/specifications"
 # Ensure fastapi-codegen is installed
 uv pip install fastapi-code-generator
 
-# Generate the FastAPI code for Location API
+# Ensure output directory exists
 export DOMAIN="location"
+mkdir -p ${REPO_DIR}/src/api/stubs/${DOMAIN}
+
+# Generate the FastAPI code for Location API
 fastapi-codegen --input ${REPO_DIR}/src/api/specifications/location.yaml \
     --output ${REPO_DIR}/src/api/stubs/${DOMAIN} \
     --generate-routers \

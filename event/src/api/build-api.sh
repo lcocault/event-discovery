@@ -15,8 +15,11 @@ export TARGET_DIR="${SCRIPT_DIR}/specifications"
 # Ensure fastapi-codegen is installed
 uv pip install fastapi-code-generator
 
-# Generate the FastAPI code for Event API
+# Ensure output directory exists
 export DOMAIN="event"
+mkdir -p ${REPO_DIR}/src/api/stubs/${DOMAIN}
+
+# Generate the FastAPI code for Event API
 fastapi-codegen --input ${REPO_DIR}/src/api/specifications/event.yaml \
     --output ${REPO_DIR}/src/api/stubs/${DOMAIN} \
     --generate-routers \

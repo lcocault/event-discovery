@@ -2,9 +2,7 @@
 
 
 import json
-import pickle
-from pathlib import Path
-from typing import Dict, List, Optional, Set, Union
+from typing import Dict, List, Optional, Set
 from collections import defaultdict
 
 from .location import Location, LocationType, Coordinates, OpeningHours
@@ -219,10 +217,7 @@ class LocationRepository:
         venue_breakdown = {}
         for location_type, location_ids in self._locations_by_type.items():
             venue_breakdown[location_type.value] = len(location_ids)
-        return {
-            "total_venues": total_venues,
-            "venue_breakdown": venue_breakdown
-        }
+        return {"total_venues": total_venues, "venue_breakdown": venue_breakdown}
 
     def get_bounds(self) -> Dict[str, float]:
         """

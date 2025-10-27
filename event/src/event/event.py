@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Optional, Dict, Any
 import uuid
 
@@ -21,10 +22,16 @@ class Event:
     name: str
     latitude: float
     longitude: float
-    start_time: Optional[str] = None
-    end_time: Optional[str] = None
+    start_time: Optional[datetime] = None
+    end_time: Optional[datetime] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     @staticmethod
     def create(name: str, latitude: float, longitude: float, **kwargs) -> "Event":
-        return Event(id=str(uuid.uuid4()), name=name, latitude=latitude, longitude=longitude, **kwargs)
+        return Event(
+            id=str(uuid.uuid4()),
+            name=name,
+            latitude=latitude,
+            longitude=longitude,
+            **kwargs,
+        )

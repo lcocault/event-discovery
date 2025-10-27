@@ -4,6 +4,7 @@ from .event_repository import EventRepository
 from .event import Event
 from fastapi import HTTPException
 from api.stubs.event.models import Event as JsonEvent
+from math import radians, cos, sin, sqrt, atan2
 
 
 class EventDispatcher:
@@ -21,16 +22,13 @@ class EventDispatcher:
             name=evt.name,
             latitude=evt.latitude,
             longitude=evt.longitude,
-            start_time=evt.start_time,
-            end_time=evt.end_time,
+            start_time=evt.start_time if evt.start_time else None,
+            end_time=evt.end_time if evt.end_time else None,
         )
 
     async def get_events_around(
-        self, latitude: float, longitude: float, time: str
+        self, latitude: float, longitude: float, time
     ) -> list[JsonEvent]:
-        from datetime import datetime
-        from math import radians, cos, sin, sqrt, atan2
-
         def haversine(lat1, lon1, lat2, lon2):
             R = 6371  # Earth radius in km
             dlat = radians(lat2 - lat1)
@@ -42,24 +40,19 @@ class EventDispatcher:
             c = 2 * atan2(sqrt(a), sqrt(1 - a))
             return R * c
 
-        try:
-            query_time = datetime.fromisoformat(time)
-        except Exception:
-            raise HTTPException(
-                status_code=400, detail="Invalid time format. Use ISO 8601."
-            )
+        query_time = time  # Already a datetime object
 
         results = []
         for evt in self.repository.get_all_events():
-            # Check if event is within 5km radius
+            # Check if event is within 500 m radius
             dist = haversine(latitude, longitude, evt.latitude, evt.longitude)
-            if dist > 5:
+            if dist > 0.5:
                 continue
             # Check if event overlaps with query time
             if evt.start_time and evt.end_time:
                 try:
-                    start = datetime.fromisoformat(evt.start_time)
-                    end = datetime.fromisoformat(evt.end_time)
+                    start = evt.start_time
+                    end = evt.end_time
                 except Exception:
                     continue
                 if not (start <= query_time <= end):

@@ -29,6 +29,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 repository = EventRepository()
+repository.load_events_from_locations_geojson(
+    "../../location/data/locations_of_interest.geojson"
+)
 dispatcher = EventDispatcher(repository)
 
 # Bind the dispatcher

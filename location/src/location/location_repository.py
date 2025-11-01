@@ -5,7 +5,7 @@ import json
 from typing import Dict, List, Optional, Set
 from collections import defaultdict
 
-from .location import Location, LocationType, Coordinates, OpeningHours
+from location.location import Location, LocationType, Coordinates, OpeningHours
 
 
 class LocationRepository:

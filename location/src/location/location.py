@@ -41,7 +41,6 @@ class LocationType(Enum):
 
 
 @dataclass
-
 class Coordinates:
     """Represents a geographic coordinate with latitude and longitude."""
 
@@ -70,5 +69,16 @@ class Location:
     name: str
     location_type: LocationType
     position: Coordinates
+    latitude: float
+    longitude: float
     opening_hours: Optional[OpeningHours] = None
     additional_info: Dict[str, Any] = field(default_factory=dict)
+
+    def __init__(
+        self, id: str, name: str, type: LocationType, latitude: float, longitude: float
+    ):
+        self.id = id
+        self.name = name
+        self.location_type = type
+        self.latitude = latitude
+        self.longitude = longitude

@@ -50,7 +50,7 @@ class LocationRepository:
                 id=location_id,
                 name=name,
                 position=position,
-                location_type=location_type,
+                type=location_type,
                 opening_hours=oh_obj,
                 additional_info=additional_info,
             )

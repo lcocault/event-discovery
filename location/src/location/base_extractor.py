@@ -214,7 +214,7 @@ class BaseExtractor(osmium.SimpleHandler, ABC):
                 id=str(uuid.uuid4()),  # Always use a generated UUID
                 name=name or f"Unnamed {location_type.value}",
                 position=Coordinates(latitude=lat, longitude=lon),
-                location_type=location_type,
+                type=location_type,
                 opening_hours=opening_hours,
                 additional_info=additional_info,
             )

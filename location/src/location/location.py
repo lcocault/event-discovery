@@ -75,10 +75,19 @@ class Location:
     additional_info: Dict[str, Any] = field(default_factory=dict)
 
     def __init__(
-        self, id: str, name: str, type: LocationType, latitude: float, longitude: float
+        self,
+        id: str,
+        name: str,
+        type: LocationType,
+        position: Coordinates,
+        opening_hours: Optional[OpeningHours] = None,
+        additional_info: Dict[str, Any] = None,
     ):
         self.id = id
         self.name = name
         self.location_type = type
-        self.latitude = latitude
-        self.longitude = longitude
+        self.latitude = position.latitude
+        self.longitude = position.longitude
+        self.position = position
+        self.opening_hours = opening_hours
+        self.additional_info = additional_info or {}

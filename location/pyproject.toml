@@ -10,6 +10,7 @@ requires-python = ">=3.11"
 dependencies = [
     "fastapi",
     "fastapi-code-generator>=0.5.4",
+    "osmium",
     "pytest>=7.4.3",
     "pytest-asyncio>=0.26.0",
     "uv",

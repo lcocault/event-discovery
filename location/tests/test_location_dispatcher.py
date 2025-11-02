@@ -1,6 +1,6 @@
 import pytest
 from location.location_dispatcher import LocationDispatcher
-from location.location import Location
+from location.location import Coordinates, Location
 from api.stubs.location.models import Location as JsonLocation
 from fastapi import HTTPException
 
@@ -12,8 +12,7 @@ class FakeRepository:
                 id="valid_id",
                 name="Test Location",
                 type="workplace",
-                latitude=0.0,
-                longitude=0.0,
+                position=Coordinates(latitude=42.0, longitude=1.5),
             )
         return None
 

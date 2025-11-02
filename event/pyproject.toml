@@ -10,22 +10,12 @@ requires-python = ">=3.11"
 dependencies = [
     "fastapi",
     "fastapi-code-generator>=0.5.4",
-    "uv",
-    "uvicorn"
-]
-
-[dependency-groups]
-dev = [
     "pytest>=7.4.3",
     "pytest-asyncio>=0.26.0"
+    "uv",
+    "uvicorn"
 ]
 
 [build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
-
-[tool.uv.env]
-PYTHONPATH = "src"
-
-[tool.pytest.ini_options]
-markers = ["asyncio: mark a test as asyncio"]

@@ -3,4 +3,4 @@
 
 cd "$(dirname "$0")"
 cd src
-exec uvicorn location.server:app --host 0.0.0.0 --port 2701
+exec uvicorn location.server:app --host 0.0.0.0 --port 3701

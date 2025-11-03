@@ -1,4 +1,5 @@
 import React from "react";
+import "./EventList.css";
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
   const R = 6371; // Radius of the Earth in kilometers
@@ -13,26 +14,27 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
+function formatTime(isoString) {
+  const date = new Date(isoString);
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
 export default function EventList({ events, center }) {
+  const sortedEvents = [...events].sort((a, b) => {
+    const distanceA = calculateDistance(center.latitude, center.longitude, a.latitude, a.longitude);
+    const distanceB = calculateDistance(center.latitude, center.longitude, b.latitude, b.longitude);
+    return distanceA - distanceB;
+  });
+
   return (
-    <div style={{
-      position: "relative",
-      width: "100%",
-      height: "100%", /* Adjusted to occupy the full lower half */
-      background: "white",
-      overflowY: "auto",
-      borderTop: "1px solid #ccc",
-      boxShadow: "0 -2px 5px rgba(0,0,0,0.3)",
-      zIndex: 1000,
-      padding: "10px"
-    }}>
+    <div className="event-list">
       <h2>Nearest Events</h2>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {events.map((evt) => (
-          <li key={evt.id} style={{ marginBottom: 10 }}>
+      <ul>
+        {sortedEvents.map((evt) => (
+          <li key={evt.id}>
             <b>{evt.name}</b>
             <br />
-            {evt.startTime} - {evt.endTime}
+            Open from {formatTime(evt.startTime)} to {formatTime(evt.endTime)}
             <br />
             Distance: {calculateDistance(center.latitude, center.longitude, evt.latitude, evt.longitude).toFixed(2)} km
           </li>

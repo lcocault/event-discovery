@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:2702/events/around";
+const API_URL = "http://localhost:3702/events/around";
 
 export function fetchEvents(pos) {
   const now = new Date().toISOString();

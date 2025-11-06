@@ -16,7 +16,7 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 function formatTime(isoString) {
   const date = new Date(isoString);
-  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  return date.toUTCString().slice(17, 22); // Extracts HH:MM in UTC
 }
 
 export default function EventList({ events, center }) {

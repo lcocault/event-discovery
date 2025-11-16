@@ -47,6 +47,11 @@ jobs:
         pytest
       working-directory: ./location
 
+    - name: Debug PYTHONPATH (location)
+      run: |
+        echo "PYTHONPATH is: $PYTHONPATH"
+      working-directory: ./location
+
     - name: Install Python dependencies (event)
       run: |
         python -m pip install --upgrade pip

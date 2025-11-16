@@ -31,11 +31,7 @@ jobs:
       working-directory: ./location
 
     - name: Generate API (location)
-      run: ./build_api.sh
-      working-directory: ./location
-
-    - name: Set executable permissions for build_api.sh (location)
-      run: chmod +x build_api.sh
+      run: uv run src/api/generate_api.py
       working-directory: ./location
 
     - name: Run Python tests (location)
@@ -50,11 +46,7 @@ jobs:
       working-directory: ./event
 
     - name: Generate API (event)
-      run: ./build_api.sh
-      working-directory: ./event
-
-    - name: Set executable permissions for build_api.sh (event)
-      run: chmod +x build_api.sh
+      run: uv run src/api/generate_api.py
       working-directory: ./event
 
     - name: Run Python tests (event)

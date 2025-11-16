@@ -38,13 +38,13 @@ jobs:
       run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
       working-directory: ./location
 
+    - name: List src directory content (location)
+      run: ls -R src
+      working-directory: ./location
+
     - name: Run Python tests (location)
       run: |
         pytest
-      working-directory: ./location
-
-    - name: List src directory content (location)
-      run: ls -R src
       working-directory: ./location
 
     - name: Install Python dependencies (event)

@@ -34,22 +34,15 @@ jobs:
       run: uv run src/api/generate_api.py
       working-directory: ./location
 
-    - name: Set PYTHONPATH (location)
-      run: echo "PYTHONPATH=\"$PYTHONPATH:src\"" >> $GITHUB_ENV
-      working-directory: ./location
-
     - name: List src directory content (location)
       run: ls -R src
       working-directory: ./location
 
     - name: Run Python tests (location)
+      env:
+        PYTHONPATH: "src"
       run: |
         pytest
-      working-directory: ./location
-
-    - name: Debug PYTHONPATH (location)
-      run: |
-        echo "PYTHONPATH is: $PYTHONPATH"
       working-directory: ./location
 
     - name: Install Python dependencies (event)
@@ -62,11 +55,9 @@ jobs:
       run: uv run src/api/generate_api.py
       working-directory: ./event
 
-    - name: Set PYTHONPATH (event)
-      run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
-      working-directory: ./event
-
     - name: Run Python tests (event)
+      env:
+        PYTHONPATH: "src"
       run: |
         pytest
       working-directory: ./event

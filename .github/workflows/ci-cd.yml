@@ -35,7 +35,7 @@ jobs:
       working-directory: ./location
 
     - name: Set PYTHONPATH (location)
-      run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
+      run: echo "PYTHONPATH=\"$PYTHONPATH:src\"" >> $GITHUB_ENV
       working-directory: ./location
 
     - name: List src directory content (location)

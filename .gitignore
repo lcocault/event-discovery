@@ -6,10 +6,11 @@ venv
 *.db
 *.egg-info
 *.geojson
-*.json
 *.kml
 *.log
 *.parquet
 *.pbf
 .env
 .venv
+
+data-simulator/data

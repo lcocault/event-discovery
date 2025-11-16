@@ -39,6 +39,10 @@ jobs:
         pytest
       working-directory: ./location
 
+    - name: Set PYTHONPATH (location)
+      run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
+      working-directory: ./location
+
     - name: Install Python dependencies (event)
       run: |
         python -m pip install --upgrade pip
@@ -52,6 +56,10 @@ jobs:
     - name: Run Python tests (event)
       run: |
         pytest
+      working-directory: ./event
+
+    - name: Set PYTHONPATH (event)
+      run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
       working-directory: ./event
 
     - name: Set up Node.js

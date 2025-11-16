@@ -34,13 +34,13 @@ jobs:
       run: uv run src/api/generate_api.py
       working-directory: ./location
 
+    - name: Set PYTHONPATH (location)
+      run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
+      working-directory: ./location
+
     - name: Run Python tests (location)
       run: |
         pytest
-      working-directory: ./location
-
-    - name: Set PYTHONPATH (location)
-      run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
       working-directory: ./location
 
     - name: Install Python dependencies (event)
@@ -53,13 +53,13 @@ jobs:
       run: uv run src/api/generate_api.py
       working-directory: ./event
 
+    - name: Set PYTHONPATH (event)
+      run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
+      working-directory: ./event
+
     - name: Run Python tests (event)
       run: |
         pytest
-      working-directory: ./event
-
-    - name: Set PYTHONPATH (event)
-      run: echo "PYTHONPATH=\"$PYTHONPATH:$(pwd)/src\"" >> $GITHUB_ENV
       working-directory: ./event
 
     - name: Set up Node.js

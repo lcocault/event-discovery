@@ -43,6 +43,10 @@ jobs:
         pytest
       working-directory: ./location
 
+    - name: List src directory content (location)
+      run: ls -R src
+      working-directory: ./location
+
     - name: Install Python dependencies (event)
       run: |
         python -m pip install --upgrade pip

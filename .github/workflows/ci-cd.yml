@@ -97,6 +97,6 @@ jobs:
           open ftp-cocault.alwaysdata.net
           user $FTP_USERNAME $FTP_PASSWORD
           cd /home/cocault/event-server
-          put dist/server
+          put ./event/dist/server
           bye
           EOF

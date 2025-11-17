@@ -92,11 +92,5 @@ jobs:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
-          sudo apt-get update && sudo apt-get install -y ftp
-          ftp -inv <<EOF
-          open ftp-cocault.alwaysdata.net
-          user $FTP_USERNAME $FTP_PASSWORD
-          cd /home/cocault/event-server
-          put ./event/dist/server
-          bye
-          EOF
+          sudo apt-get update && sudo apt-get install -y lftp
+          lftp -e "set ssl:verify-certificate no; open ftp-cocault.alwaysdata.net; user $FTP_USERNAME $FTP_PASSWORD; cd /home/cocault/event-server; put ./event/dist/server; bye"

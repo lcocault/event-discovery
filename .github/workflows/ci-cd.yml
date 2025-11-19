@@ -80,21 +80,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy FastAPI source code and setup script via FTP
+      - name: Build FastAPI server with pyinstaller
+        run: |
+          docker run --rm \
+            -v $(pwd):/workspace \
+            -w /workspace/event \
+            python:3.11-slim \
+            bash -c "apt-get update && apt-get install -y gcc && \
+                     python -m pip install --upgrade pip && \
+                     pip install pyinstaller && \
+                     pyinstaller --onefile src/event/server.py"
+
+      - name: Deploy FastAPI server executable via FTP
         env:
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           sudo apt-get update && sudo apt-get install -y lftp
           lftp -e "set ssl:verify-certificate no; open ftp-cocault.alwaysdata.net; user $FTP_USERNAME $FTP_PASSWORD; \
-          mirror --reverse --delete ./event/ /home/cocault/event-server; \
-          put ./event/setup_server.sh -o /home/cocault/event-server/setup_server.sh; \
+          put ./event/dist/server -o /home/cocault/event-server/server; \
           bye"
-
-      - name: Instructions for Manual Setup
-        run: |
-          echo "The source code and setup script have been uploaded."
-          echo "Please log in to the server and execute the following commands manually:"
-          echo "1. Navigate to the deployment directory: cd /home/cocault/event-server"
-          echo "2. Make the setup script executable: chmod +x setup_server.sh"
-          echo "3. Run the setup script: ./setup_server.sh"

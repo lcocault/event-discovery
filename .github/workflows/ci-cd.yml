@@ -99,5 +99,5 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y lftp
           lftp -e "set ssl:verify-certificate no; open ftp-cocault.alwaysdata.net; user $FTP_USERNAME $FTP_PASSWORD; \
-          put ./event/dist/server -o /home/cocault/event-server/server; \
+          put ./event/dist/server; \
           bye"

@@ -14,7 +14,7 @@ pip install --upgrade pip
 
 # Install dependencies
 if [ -f pyproject.toml ]; then
-    pip install .
+    pip install . --ignore-requires-python
 else
     echo "pyproject.toml not found. Please ensure it is uploaded."
 fi

@@ -89,6 +89,7 @@ jobs:
             bash -c "apt-get update && apt-get install -y python3 python3-pip python3-venv gcc && \
                      python3 -m pip install --upgrade pip && \
                      pip install pyinstaller fastapi && \
+                     pip install . && \
                      python3 src/api/generate_api.py && \
                      pyinstaller --onefile --hidden-import fastapi src/event/server.py && \
                      chmod +x dist/server"

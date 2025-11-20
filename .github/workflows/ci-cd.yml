@@ -77,9 +77,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: List workspace contents
-        run: |
-          ls -R
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Build FastAPI server with pyinstaller in compatible environment
         run: |
@@ -90,6 +89,7 @@ jobs:
             bash -c "apt-get update && apt-get install -y python3 python3-pip python3-venv gcc && \
                      python3 -m pip install --upgrade pip && \
                      pip install pyinstaller fastapi && \
+                     python3 src/api/generate_api.py && \
                      pyinstaller --onefile --hidden-import fastapi src/event/server.py && \
                      chmod +x dist/server"
 

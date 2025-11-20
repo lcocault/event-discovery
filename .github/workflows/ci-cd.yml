@@ -16,9 +16,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: List workspace contents
-        run: |
-          ls -R
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -78,8 +77,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: List workspace contents
+        run: |
+          ls -R
 
       - name: Build FastAPI server with pyinstaller in compatible environment
         run: |

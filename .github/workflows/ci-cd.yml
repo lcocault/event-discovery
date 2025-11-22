@@ -86,9 +86,10 @@ jobs:
             -v $(pwd):/workspace \
             -w /workspace/event \
             debian:bullseye \
-            bash -c "apt-get update && apt-get install -y software-properties-common && \
-                     add-apt-repository ppa:deadsnakes/ppa && \
-                     apt-get update && apt-get install -y python3.11 python3.11-venv python3.11-dev gcc && \
+            bash -c "apt-get update && apt-get install -y wget build-essential zlib1g-dev libffi-dev libssl-dev && \
+                     wget https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz && \
+                     tar -xzf Python-3.11.6.tgz && cd Python-3.11.6 && \
+                     ./configure --enable-optimizations && make -j$(nproc) && make altinstall && \
                      python3.11 -m pip install --upgrade pip && \
                      python3.11 -m pip install pyinstaller fastapi && \
                      python3.11 -m pip install . && \

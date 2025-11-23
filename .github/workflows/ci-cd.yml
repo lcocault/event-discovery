@@ -80,41 +80,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build FastAPI server with pyinstaller in compatible environment
-        run: |
-          docker run --rm \
-            -v $(pwd):/workspace \
-            -w /workspace/event \
-            python:3.11-slim \
-            bash -c "apt-get update && apt-get install -y build-essential && \
-                     python3 -m pip install --upgrade pip setuptools wheel && \
-                     python3 -m pip install pyinstaller fastapi && \
-                     python3 -m pip install . && \
-                     python3 src/api/generate_api.py && \
-                     pyinstaller --onefile --hidden-import fastapi src/event/server.py && \
-                     chmod +x dist/server"
-
-      - name: Deploy FastAPI server executable via FTP
-        env:
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-        run: |
-          sudo apt-get update && sudo apt-get install -y lftp
-          lftp -e "set ssl:verify-certificate no; open ftp-cocault.alwaysdata.net; user $FTP_USERNAME $FTP_PASSWORD; \
-          put ./event/dist/server; \
-          bye"
-
-      - name: Build FastAPI server on target server
+      - name: Build FastAPI server on target server without sudo
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@ssh-cocault.alwaysdata.net \
-          "echo '${{ secrets.SSH_PASSWORD }}' | sudo -S apt-get update && \
-           echo '${{ secrets.SSH_PASSWORD }}' | sudo -S apt-get install -y wget build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev liblzma-dev libsqlite3-dev libreadline-dev libncurses-dev libgdbm-dev libnss3-dev tk-dev && \
+          "mkdir -p ~/python-build && cd ~/python-build && \
            wget https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz && \
            tar -xzf Python-3.11.6.tgz && cd Python-3.11.6 && \
-           ./configure --enable-optimizations && make -j$(nproc) && echo '${{ secrets.SSH_PASSWORD }}' | sudo -S make altinstall && \
-           python3.11 -m pip install --upgrade pip setuptools wheel && \
-           python3.11 -m pip install pyinstaller fastapi && \
-           python3.11 -m pip install . && \
-           python3.11 src/api/generate_api.py && \
-           pyinstaller --onefile --hidden-import fastapi src/event/server.py && \
+           ./configure --prefix=$HOME/python --enable-optimizations && make -j$(nproc) && make install && \
+           ~/python/bin/python3.11 -m pip install --upgrade pip setuptools wheel && \
+           ~/python/bin/python3.11 -m pip install pyinstaller fastapi && \
+           ~/python/bin/python3.11 -m pip install . && \
+           ~/python/bin/python3.11 src/api/generate_api.py && \
+           ~/python/bin/pyinstaller --onefile --hidden-import fastapi src/event/server.py && \
            chmod +x dist/server"

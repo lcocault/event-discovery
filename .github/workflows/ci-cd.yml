@@ -107,10 +107,11 @@ jobs:
       - name: Build FastAPI server on target server
         run: |
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@ssh-cocault.alwaysdata.net \
-          "sudo apt-get update && sudo apt-get install -y wget build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev liblzma-dev libsqlite3-dev libreadline-dev libncurses-dev libgdbm-dev libnss3-dev tk-dev && \
+          "echo '${{ secrets.SSH_PASSWORD }}' | sudo -S apt-get update && \
+           echo '${{ secrets.SSH_PASSWORD }}' | sudo -S apt-get install -y wget build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev liblzma-dev libsqlite3-dev libreadline-dev libncurses-dev libgdbm-dev libnss3-dev tk-dev && \
            wget https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz && \
            tar -xzf Python-3.11.6.tgz && cd Python-3.11.6 && \
-           ./configure --enable-optimizations && make -j$(nproc) && sudo make altinstall && \
+           ./configure --enable-optimizations && make -j$(nproc) && echo '${{ secrets.SSH_PASSWORD }}' | sudo -S make altinstall && \
            python3.11 -m pip install --upgrade pip setuptools wheel && \
            python3.11 -m pip install pyinstaller fastapi && \
            python3.11 -m pip install . && \

@@ -85,19 +85,12 @@ jobs:
           docker run --rm \
             -v $(pwd):/workspace \
             -w /workspace/event \
-            debian:bullseye \
-            bash -c "apt-get update && apt-get install -y wget build-essential zlib1g-dev libffi-dev libbz2-dev liblzma-dev libsqlite3-dev libreadline-dev libncurses-dev libgdbm-dev libnss3-dev tk-dev && \
-                     wget https://www.openssl.org/source/openssl-1.1.1v.tar.gz && \
-                     tar -xzf openssl-1.1.1v.tar.gz && cd openssl-1.1.1v && \
-                     ./config --prefix=/usr/local/ssl --openssldir=/usr/local/ssl && make -j$(nproc) && make install && cd .. && \
-                     wget https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz && \
-                     tar -xzf Python-3.11.6.tgz && cd Python-3.11.6 && \
-                     ./configure --enable-optimizations --with-openssl=/usr/local/ssl && make -j$(nproc) && make altinstall && \
-                     python3.11 -m pip install --upgrade pip setuptools wheel && \
-                     export SETUPTOOLS_USE_DISTUTILS=stdlib && \
-                     python3.11 -m pip install pyinstaller fastapi && \
-                     python3.11 -m pip install . && \
-                     python3.11 src/api/generate_api.py && \
+            python:3.11-slim \
+            bash -c "apt-get update && apt-get install -y build-essential && \
+                     python3 -m pip install --upgrade pip setuptools wheel && \
+                     python3 -m pip install pyinstaller fastapi && \
+                     python3 -m pip install . && \
+                     python3 src/api/generate_api.py && \
                      pyinstaller --onefile --hidden-import fastapi src/event/server.py && \
                      chmod +x dist/server"
 

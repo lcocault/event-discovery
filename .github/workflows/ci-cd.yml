@@ -78,18 +78,26 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Build FastAPI server on target server without sudo
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
         run: |
-          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@ssh-cocault.alwaysdata.net \
-          "mkdir -p ~/python-build && cd ~/python-build && \
-           wget https://www.python.org/ftp/python/3.11.6/Python-3.11.6.tgz && \
-           tar -xzf Python-3.11.6.tgz && cd Python-3.11.6 && \
-           ./configure --prefix=$HOME/python --enable-optimizations && make -j$(nproc) && make install && \
-           ~/python/bin/python3.11 -m pip install --upgrade pip setuptools wheel && \
-           ~/python/bin/python3.11 -m pip install pyinstaller fastapi && \
-           ~/python/bin/python3.11 -m pip install . && \
-           ~/python/bin/python3.11 src/api/generate_api.py && \
-           ~/python/bin/pyinstaller --onefile --hidden-import fastapi src/event/server.py && \
-           chmod +x dist/server"
+          pip install --upgrade pip
+          pip install .
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd event-discovery
+            git pull
+            pip install .
+            systemctl restart fastapi

@@ -77,19 +77,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install .
-        working-directory: ./event
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1
@@ -100,7 +87,8 @@ jobs:
           script: |
             cd event-discovery
             git pull
+            cd event
             python3 -m venv venv
-            source venv/bin/activate
+            . venv/bin/activate
             pip install .
             systemctl restart fastapi

@@ -98,4 +98,5 @@ jobs:
             python3.12 -m venv venv
             . venv/bin/activate
             pip install .
-            systemctl restart fastapi
+            ./build_api.py
+            nohup ./run_event_server.sh > /dev/null 2>&1 &

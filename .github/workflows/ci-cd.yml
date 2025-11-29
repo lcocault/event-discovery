@@ -98,5 +98,5 @@ jobs:
             python3.12 -m venv venv
             . venv/bin/activate
             pip install .
-            uv run src/api/generate_api.py
+            pkill -f run_event_server.sh || true
             nohup ./run_event_server.sh > /dev/null 2>&1 &

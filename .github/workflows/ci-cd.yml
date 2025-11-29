@@ -29,13 +29,14 @@ jobs:
         working-directory: ./location
 
       - name: Generate API (location)
-        run: uv run src/api/generate_api.py
+        run: |
+          . venv/bin/activate
+          uv run src/api/generate_api.py
         working-directory: ./location
 
       - name: Run Python tests (location)
-        env:
-          PYTHONPATH: "src"
         run: |
+          . venv/bin/activate
           pytest
         working-directory: ./location
 
@@ -49,13 +50,14 @@ jobs:
         working-directory: ./event
 
       - name: Generate API (event)
-        run: uv run src/api/generate_api.py
+        run: |
+          . venv/bin/activate
+          uv run src/api/generate_api.py
         working-directory: ./event
 
       - name: Run Python tests (event)
-        env:
-          PYTHONPATH: "src"
         run: |
+          . venv/bin/activate
           pytest
         working-directory: ./event
 

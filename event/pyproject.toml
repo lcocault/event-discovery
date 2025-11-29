@@ -6,7 +6,7 @@ authors = [
     { name = "Laurent Cocault" }
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = "==3.12"
 dependencies = [
     "fastapi",
     "fastapi-code-generator>=0.5.4",

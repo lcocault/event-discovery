@@ -19,14 +19,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Create and activate virtual environment
+      - name: Use locally installed Python 3.12
         run: |
-          python3 -m venv venv
+          python3.12 --version
+          python3.12 -m venv venv
           . venv/bin/activate
           pip install --upgrade pip
           pip install .
@@ -43,9 +39,10 @@ jobs:
           pytest
         working-directory: ./location
 
-      - name: Install Python dependencies (event)
+      - name: Use locally installed Python 3.12
         run: |
-          python3 -m venv venv
+          python3.12 --version
+          python3.12 -m venv venv
           . venv/bin/activate
           pip install --upgrade pip
           pip install .
@@ -92,7 +89,7 @@ jobs:
             cd event-discovery
             git pull
             cd event
-            python3 -m venv venv
+            python3.12 -m venv venv
             . venv/bin/activate
             pip install .
             systemctl restart fastapi

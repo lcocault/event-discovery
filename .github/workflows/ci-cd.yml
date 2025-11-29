@@ -35,6 +35,8 @@ jobs:
         working-directory: ./location
 
       - name: Run Python tests (location)
+        env:
+          PYTHONPATH: "src"
         run: |
           . venv/bin/activate
           pytest
@@ -56,6 +58,8 @@ jobs:
         working-directory: ./event
 
       - name: Run Python tests (event)
+        env:
+          PYTHONPATH: "src"
         run: |
           . venv/bin/activate
           pytest

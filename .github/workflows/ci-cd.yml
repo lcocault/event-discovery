@@ -85,7 +85,7 @@ jobs:
 
     steps:
 
-      - name: Deploy to VPS via SSH
+      - name: Deploy Server to VPS via SSH
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -100,3 +100,15 @@ jobs:
             pip install .
             pkill -f run_event_server.sh || true
             nohup ./run_event_server.sh > /dev/null 2>&1 &
+
+      - name: Deploy WUI to VPS via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd event-discovery/wui
+            git pull
+            bun install
+            bun run src/index.js

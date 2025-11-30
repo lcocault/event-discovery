@@ -98,8 +98,7 @@ jobs:
             python3.12 -m venv venv
             . venv/bin/activate
             pip install .
-            pkill -f run_event_server.sh || true
-            nohup ./run_event_server.sh > /dev/null 2>&1 &
+            nohup ./run_event_server.sh > event.log 2>&1 &
 
       - name: Deploy WUI to VPS via SSH
         uses: appleboy/ssh-action@v1
@@ -111,4 +110,4 @@ jobs:
             cd event-discovery/wui
             git pull
             bun install
-            bun run src/index.js
+            nohup bun run start > wui.log 2>&1 &

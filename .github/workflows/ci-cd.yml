@@ -84,7 +84,6 @@ jobs:
     runs-on: self-hosted
 
     steps:
-
       - name: Deploy Server to VPS via SSH
         uses: appleboy/ssh-action@v1
         with:
@@ -110,4 +109,4 @@ jobs:
             cd event-discovery/wui
             git pull
             bun install
-            nohup bun run start > wui.log 2>&1 &
+            nohup ./run_wui.sh > wui.log 2>&1 &

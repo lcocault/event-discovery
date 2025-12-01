@@ -19,7 +19,7 @@ function formatTime(isoString) {
   return date.toUTCString().slice(17, 22); // Extracts HH:MM in UTC
 }
 
-export default function EventList({ events, center }) {
+export default function EventList({ events, center, onEventClick }) {
   const sortedEvents = [...events].sort((a, b) => {
     const distanceA = calculateDistance(center.latitude, center.longitude, a.latitude, a.longitude);
     const distanceB = calculateDistance(center.latitude, center.longitude, b.latitude, b.longitude);
@@ -31,7 +31,7 @@ export default function EventList({ events, center }) {
       <h2>Nearest Events</h2>
       <ul>
         {sortedEvents.map((evt) => (
-          <li key={evt.id}>
+          <li key={evt.id} onClick={() => onEventClick(evt)} style={{ cursor: "pointer" }}>
             <b>{evt.name}</b>
             <br />
             Open from {formatTime(evt.startTime)} to {formatTime(evt.endTime)}

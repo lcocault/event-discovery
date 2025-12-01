@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { MapContainer, TileLayer, Circle, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-export default function MapWithRefresh({ events, position, onRefresh }) {
+export default function MapWithRefresh({ events, position, onRefresh, zoomToLocation }) {
   const mapRef = useRef();
 
   function handleRefresh() {
@@ -18,6 +18,12 @@ export default function MapWithRefresh({ events, position, onRefresh }) {
     mapRef.current = map;
     return null;
   }
+
+  React.useEffect(() => {
+    if (zoomToLocation && mapRef.current) {
+      mapRef.current.setView([zoomToLocation.latitude, zoomToLocation.longitude], 13);
+    }
+  }, [zoomToLocation]);
 
   return (
     <div style={{ position: "relative", height: "100%", width: "100%" }}>

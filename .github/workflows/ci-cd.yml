@@ -92,7 +92,9 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd event-discovery
+            git stash
             git pull
+            git stash pop
             cd event
             python3.12 -m venv venv
             . venv/bin/activate
@@ -107,6 +109,8 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd event-discovery/wui
+            git stash
             git pull
+            git stash pop
             bun install
             nohup ./run_wui.sh > wui.log 2>&1 &
